@@ -4,7 +4,7 @@
     A C++ reimplementation of a drop-merge sort, originally made by Emil Ernerfeldt:
     https://github.com/emilk/drop-merge-sort
 
-    Modified in 2017-2018 by Morwenn for inclusion into cpp-sort
+    Modified in 2017-2019 by Morwenn for inclusion into cpp-sort
 
     There are two versions of this function.
 
@@ -61,7 +61,7 @@ namespace cppsort::detail
 
         constexpr difference_type recency = 8;
 
-        while (read != end) {
+        do {
             if (begin != write && comp(proj(*read), proj(*std::prev(write)))) {
 
                 if (double_comparison && num_dropped_in_row == 0 && write != std::next(begin) &&
@@ -79,7 +79,7 @@ namespace cppsort::detail
                 } else {
                     for (difference_type i = 0 ; i < num_dropped_in_row ; ++i) {
                         --read;
-                        if constexpr (not std::is_trivially_copyable<rvalue_reference>::value) {
+                        if constexpr (not std::is_trivially_copyable_v<rvalue_reference>) {
                             // If the value is trivially copyable, then it shouldn't have
                             // been modified by the call to iter_move, and the original
                             // value is still fully where it should be
@@ -94,11 +94,24 @@ namespace cppsort::detail
                     num_dropped_in_row = 0;
                 }
             } else {
-                *write = iter_move(read);
+                if constexpr (std::is_trivially_copyable_v<rvalue_reference>) {
+                    // If the type is trivially copyable, the potential self-move
+                    // should not trigger any issue
+                    *write = iter_move(read);
+                } else {
+                    if (read != write) {
+                        *write = iter_move(read);
+                    }
+                }
                 ++read;
                 ++write;
                 num_dropped_in_row = 0;
             }
+        } while (read != end);
+
+        // Don't bother with merging if there is nothing to merge
+        if (dropped.empty()) {
+            return;
         }
 
         // Sort the dropped elements
@@ -106,7 +119,7 @@ namespace cppsort::detail
 
         auto back = end;
 
-        while (not dropped.empty()) {
+        do {
             auto& last_dropped = dropped.back();
 
             while (begin != write && comp(proj(last_dropped), proj(*std::prev(write)))) {
@@ -117,7 +130,7 @@ namespace cppsort::detail
             --back;
             *back = std::move(last_dropped);
             dropped.pop_back();
-        }
+        } while (not dropped.empty());
     }
 }
 

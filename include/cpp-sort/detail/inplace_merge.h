@@ -6,12 +6,12 @@
 // This file is dual licensed under the MIT and the University of Illinois Open
 // Source Licenses. See LICENSE.TXT for details.
 //
-// Modified in 2015-2018 by Morwenn for inclusion into cpp-sort
+// Modified in 2015-2019 by Morwenn for inclusion into cpp-sort
 //
 //===----------------------------------------------------------------------===//
 
 // Copyright (c) 2009 Alexander Stepanov and Paul McJones
-// Modified in 2015-2018 by Morwenn for inclusion into cpp-sort
+// Modified in 2015-2019 by Morwenn for inclusion into cpp-sort
 //
 // Permission to use, copy, modify, distribute and sell this software
 // and its documentation for any purpose is hereby granted without
@@ -44,6 +44,7 @@
 #include "iterator_traits.h"
 #include "lower_bound.h"
 #include "memory.h"
+#include "move.h"
 #include "rotate.h"
 #include "type_traits.h"
 #include "upper_bound.h"
@@ -62,6 +63,7 @@ namespace cppsort::detail
                             Compare compare, Projection projection)
         -> void
     {
+        using utility::iter_move;
         auto&& comp = utility::as_function(compare);
         auto&& proj = utility::as_function(projection);
 
@@ -69,10 +71,10 @@ namespace cppsort::detail
             CPPSORT_ASSUME(first1 != last1);
             CPPSORT_ASSUME(first2 != last2);
             if (comp(proj(*first2), proj(*first1))) {
-                *result = std::move(*first2);
+                *result = iter_move(first2);
                 ++first2;
             } else {
-                *result = std::move(*first1);
+                *result = iter_move(first1);
                 ++first1;
             }
             ++result;
@@ -80,15 +82,15 @@ namespace cppsort::detail
 
         for (; first1 != last1 ; ++result) {
             if (first2 == last2) {
-                std::move(first1, last1, result);
+                detail::move(first1, last1, result);
                 return;
             }
 
             if (comp(proj(*first2), proj(*first1))) {
-                *result = std::move(*first2);
+                *result = iter_move(first2);
                 ++first2;
             } else {
-                *result = std::move(*first1);
+                *result = iter_move(first1);
                 ++first1;
             }
         }

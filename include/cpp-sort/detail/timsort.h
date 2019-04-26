@@ -6,7 +6,7 @@
  * - http://cr.openjdk.java.net/~martin/webrevs/openjdk7/timsort/raw_files/new/src/share/classes/java/util/TimSort.java
  *
  * Copyright (c) 2011 Fuji, Goro (gfx) <gfuji@cpan.org>.
- * Modified in 2015-2018 by Morwenn for inclusion into cpp-sort.
+ * Modified in 2015-2019 by Morwenn for inclusion into cpp-sort.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -47,12 +47,25 @@
 #include "memory.h"
 #include "move.h"
 #include "reverse.h"
-#include "three_way_compare.h"
 #include "type_traits.h"
 #include "upper_bound.h"
 
 namespace cppsort::detail
 {
+    template<typename Iterator>
+    struct run
+    {
+        using difference_type = difference_type_t<Iterator>;
+
+        Iterator base;
+        difference_type len;
+
+        run(Iterator base, difference_type len):
+            base(std::move(base)),
+            len(std::move(len))
+        {}
+    };
+
     template<typename RandomAccessIterator, typename Compare, typename Projection>
     class TimSort
     {
@@ -60,10 +73,6 @@ namespace cppsort::detail
         using value_type = value_type_t<iterator>;
         using rvalue_reference = remove_cvref_t<rvalue_reference_t<iterator>>;
         using difference_type = difference_type_t<iterator>;
-        using compare_type = three_way_compare<Compare>;
-
-        compare_type comp_;
-        Projection proj_;
 
         static constexpr int min_merge = 32;
         static constexpr int min_gallop = 7;
@@ -74,26 +83,12 @@ namespace cppsort::detail
         std::unique_ptr<rvalue_reference, operator_deleter> buffer;
         std::ptrdiff_t buffer_size = 0;
 
-        TimSort(compare_type comp, Projection projection):
-            comp_(std::move(comp)), proj_(std::move(projection))
-        {}
-
         // Silence GCC -Winline warning
         ~TimSort() noexcept {}
 
-        struct run
-        {
-            iterator base;
-            difference_type len;
+        std::vector<run<iterator>> pending_;
 
-            run(iterator base, difference_type len):
-                base(std::move(base)),
-                len(std::move(len))
-            {}
-        };
-        std::vector<run> pending_;
-
-        static auto sort(iterator const lo, iterator const hi, compare_type c, Projection projection)
+        static auto sort(iterator const lo, iterator const hi, Compare compare, Projection projection)
             -> void
         {
             assert( lo <= hi );
@@ -104,37 +99,37 @@ namespace cppsort::detail
             }
 
             if (nRemaining < min_merge) {
-                difference_type const initRunLen = countRunAndMakeAscending(lo, hi, c, projection);
-                binarySort(lo, hi, lo + initRunLen, std::move(c), std::move(projection));
+                difference_type const initRunLen = countRunAndMakeAscending(lo, hi, compare, projection);
+                binarySort(lo, hi, lo + initRunLen, std::move(compare), std::move(projection));
                 return;
             }
 
-            TimSort ts(c, projection);
+            TimSort ts{};
             difference_type const minRun = minRunLength(nRemaining);
             iterator cur          = lo;
             do {
-                difference_type runLen = countRunAndMakeAscending(cur, hi, c, projection);
+                difference_type runLen = countRunAndMakeAscending(cur, hi, compare, projection);
 
                 if (runLen < minRun) {
                     difference_type const force  = std::min(nRemaining, minRun);
-                    binarySort(cur, cur + force, cur + runLen, c, projection);
+                    binarySort(cur, cur + force, cur + runLen, compare, projection);
                     runLen = force;
                 }
 
                 ts.pushRun(cur, runLen);
-                ts.mergeCollapse();
+                ts.mergeCollapse(compare, projection);
 
                 cur        += runLen;
                 nRemaining -= runLen;
             } while (nRemaining != 0);
 
             assert( cur == hi );
-            ts.mergeForceCollapse();
+            ts.mergeForceCollapse(compare, projection);
             assert( ts.pending_.size() == 1 );
         } // sort()
 
         static auto binarySort(iterator const lo, iterator const hi, iterator start,
-                               compare_type compare, Projection projection)
+                               Compare compare, Projection projection)
             -> void
         {
             assert( lo <= start );
@@ -150,7 +145,7 @@ namespace cppsort::detail
                 assert(lo <= start);
                 auto pivot = iter_move(start);
 
-                iterator const pos = upper_bound(lo, start, proj(pivot), compare.base(), projection);
+                iterator const pos = upper_bound(lo, start, proj(pivot), compare, projection);
                 for (iterator p = start; p > pos; --p) {
                     *p = iter_move(std::prev(p));
                 }
@@ -159,10 +154,11 @@ namespace cppsort::detail
         }
 
         static auto countRunAndMakeAscending(iterator const lo, iterator const hi,
-                                             compare_type compare, Projection projection)
+                                             Compare compare, Projection projection)
             -> difference_type
         {
             assert( lo < hi );
+            auto&& comp = utility::as_function(compare);
             auto&& proj = utility::as_function(projection);
 
             iterator runHi = std::next(lo);
@@ -170,15 +166,15 @@ namespace cppsort::detail
                 return 1;
             }
 
-            if (compare.lt(proj(*runHi), proj(*lo))) { // descending
+            if (comp(proj(*runHi), proj(*lo))) { // descending
                 do {
                     ++runHi;
-                } while (runHi < hi && compare.lt(proj(*runHi), proj(*std::prev(runHi))));
+                } while (runHi < hi && comp(proj(*runHi), proj(*std::prev(runHi))));
                 detail::reverse(lo, runHi);
             } else { // ascending
                 do {
                     ++runHi;
-                } while (runHi < hi && compare.ge(proj(*runHi), proj(*std::prev(runHi))));
+                } while (runHi < hi && not comp(proj(*runHi), proj(*std::prev(runHi))));
             }
 
             return runHi - lo;
@@ -203,7 +199,7 @@ namespace cppsort::detail
             pending_.emplace_back(runBase, runLen);
         }
 
-        auto mergeCollapse()
+        auto mergeCollapse(Compare compare, Projection projection)
             -> void
         {
             while ( pending_.size() > 1 ) {
@@ -214,10 +210,10 @@ namespace cppsort::detail
                     if (pending_[n - 1].len < pending_[n + 1].len) {
                         --n;
                     }
-                    mergeAt(n);
+                    mergeAt(n, compare, projection);
                 }
                 else if (pending_[n].len <= pending_[n + 1].len) {
-                    mergeAt(n);
+                    mergeAt(n, compare, projection);
                 }
                 else {
                     break;
@@ -225,7 +221,7 @@ namespace cppsort::detail
             }
         }
 
-        auto mergeForceCollapse()
+        auto mergeForceCollapse(Compare compare, Projection projection)
             -> void
         {
             while ( pending_.size() > 1 ) {
@@ -234,11 +230,11 @@ namespace cppsort::detail
                 if (n > 0 && pending_[n - 1].len < pending_[n + 1].len) {
                     --n;
                 }
-                mergeAt(n);
+                mergeAt(n, compare, projection);
             }
         }
 
-        auto mergeAt(difference_type const i)
+        auto mergeAt(difference_type const i, Compare compare, Projection projection)
             -> void
         {
             difference_type const stackSize = pending_.size();
@@ -263,7 +259,7 @@ namespace cppsort::detail
 
             pending_.pop_back();
 
-            difference_type const k = gallopRight(*base2, base1, len1, 0);
+            difference_type const k = gallopRight(*base2, base1, len1, 0, compare, projection);
             assert( k >= 0 );
 
             base1 += k;
@@ -273,37 +269,39 @@ namespace cppsort::detail
                 return;
             }
 
-            len2 = gallopLeft(base1[len1 - 1], base2, len2, len2 - 1);
+            len2 = gallopLeft(base1[len1 - 1], base2, len2, len2 - 1, compare, projection);
             assert( len2 >= 0 );
             if (len2 == 0) {
                 return;
             }
 
             if (len1 <= len2) {
-                mergeLo(base1, len1, base2, len2);
+                mergeLo(base1, len1, base2, len2, compare, projection);
             }
             else {
-                mergeHi(base1, len1, base2, len2);
+                mergeHi(base1, len1, base2, len2, compare, projection);
             }
         }
 
         template<typename T, typename Iter>
-        auto gallopLeft(const T& key, Iter const base, difference_type const len, difference_type const hint)
+        auto gallopLeft(const T& key, Iter const base, difference_type const len, difference_type const hint,
+                        Compare compare, Projection projection)
             -> difference_type
         {
             assert( len > 0 );
             assert( hint >= 0 );
             assert( hint < len );
 
-            auto&& proj = utility::as_function(proj_);
+            auto&& comp = utility::as_function(compare);
+            auto&& proj = utility::as_function(projection);
             auto&& key_proj = proj(key);
 
             difference_type lastOfs = 0;
             difference_type ofs = 1;
 
-            if (comp_.gt(key_proj, proj(base[hint]))) {
+            if (comp(proj(base[hint]), key_proj)) {
                 difference_type const maxOfs = len - hint;
-                while (ofs < maxOfs && comp_.gt(key_proj, proj(base[hint + ofs]))) {
+                while (ofs < maxOfs && comp(proj(base[hint + ofs]), key_proj)) {
                     lastOfs = ofs;
                     ofs     = (ofs << 1) + 1;
 
@@ -320,7 +318,7 @@ namespace cppsort::detail
             }
             else {
                 difference_type const maxOfs = hint + 1;
-                while (ofs < maxOfs && comp_.le(key_proj, proj(base[hint - ofs]))) {
+                while (ofs < maxOfs && not comp(proj(base[hint - ofs]), key_proj)) {
                     lastOfs = ofs;
                     ofs     = (ofs << 1) + 1;
 
@@ -340,26 +338,28 @@ namespace cppsort::detail
             assert( lastOfs < ofs );
             assert( ofs <= len );
 
-            return lower_bound(base+(lastOfs+1), base+ofs, key_proj, comp_.base(), proj_) - base;
+            return lower_bound(base+(lastOfs+1), base+ofs, key_proj, compare, projection) - base;
         }
 
         template<typename T, typename Iter>
-        auto gallopRight(const T& key, Iter const base, difference_type const len, difference_type const hint)
+        auto gallopRight(const T& key, Iter const base, difference_type const len, difference_type const hint,
+                         Compare compare, Projection projection)
             -> difference_type
         {
             assert( len > 0 );
             assert( hint >= 0 );
             assert( hint < len );
 
-            auto&& proj = utility::as_function(proj_);
+            auto&& comp = utility::as_function(compare);
+            auto&& proj = utility::as_function(projection);
             auto&& key_proj = proj(key);
 
             difference_type ofs = 1;
             difference_type lastOfs = 0;
 
-            if (comp_.lt(key_proj, proj(base[hint]))) {
+            if (comp(key_proj, proj(base[hint]))) {
                 difference_type const maxOfs = hint + 1;
-                while (ofs < maxOfs && comp_.lt(key_proj, proj(base[hint - ofs]))) {
+                while (ofs < maxOfs && comp(key_proj, proj(base[hint - ofs]))) {
                     lastOfs = ofs;
                     ofs     = (ofs << 1) + 1;
 
@@ -377,7 +377,7 @@ namespace cppsort::detail
             }
             else {
                 difference_type const maxOfs = len - hint;
-                while (ofs < maxOfs && comp_.ge(key_proj, proj(base[hint + ofs]))) {
+                while (ofs < maxOfs && not comp(key_proj, proj(base[hint + ofs]))) {
                     lastOfs = ofs;
                     ofs     = (ofs << 1) + 1;
 
@@ -396,7 +396,7 @@ namespace cppsort::detail
             assert( lastOfs < ofs );
             assert( ofs <= len );
 
-            return upper_bound(base+(lastOfs+1), base+ofs, key_proj, comp_.base(), proj_) - base;
+            return upper_bound(base+(lastOfs+1), base+ofs, key_proj, compare, projection) - base;
         }
 
         auto resize_buffer(std::ptrdiff_t new_size)
@@ -414,7 +414,8 @@ namespace cppsort::detail
             }
         }
 
-        auto mergeLo(iterator const base1, difference_type len1, iterator const base2, difference_type len2)
+        auto mergeLo(iterator const base1, difference_type len1, iterator const base2, difference_type len2,
+                     Compare compare, Projection projection)
             -> void
         {
             assert( len1 > 0 );
@@ -422,6 +423,8 @@ namespace cppsort::detail
             assert( base1 + len1 == base2 );
 
             using utility::iter_move;
+            auto&& comp = utility::as_function(compare);
+            auto&& proj = utility::as_function(projection);
 
             resize_buffer(len1);
             destruct_n<rvalue_reference> d(0);
@@ -450,7 +453,6 @@ namespace cppsort::detail
             }
 
             int minGallop(minGallop_);
-            auto&& proj = utility::as_function(proj_);
 
             // outer:
             while (true) {
@@ -462,7 +464,7 @@ namespace cppsort::detail
                     assert( len1 > 1 );
                     assert( len2 > 0 );
 
-                    if (comp_.lt(proj(*cursor2), proj(*cursor1))) {
+                    if (comp(proj(*cursor2), proj(*cursor1))) {
                         *dest = iter_move(cursor2);
                         ++dest;
                         ++cursor2;
@@ -493,7 +495,7 @@ namespace cppsort::detail
                     assert( len1 > 1 );
                     assert( len2 > 0 );
 
-                    count1 = gallopRight(*cursor2, cursor1, len1, 0);
+                    count1 = gallopRight(*cursor2, cursor1, len1, 0, compare, projection);
                     if (count1 != 0) {
                         detail::move_backward(cursor1, cursor1 + count1, dest + count1);
                         dest    += count1;
@@ -513,7 +515,7 @@ namespace cppsort::detail
                         break;
                     }
 
-                    count2 = gallopLeft(*cursor1, cursor2, len2, 0);
+                    count2 = gallopLeft(*cursor1, cursor2, len2, 0, compare, projection);
                     if (count2 != 0) {
                         detail::move(cursor2, cursor2 + count2, dest);
                         dest    += count2;
@@ -559,13 +561,17 @@ namespace cppsort::detail
             }
         }
 
-        auto mergeHi(iterator const base1, difference_type len1, iterator const base2, difference_type len2)
+        auto mergeHi(iterator const base1, difference_type len1, iterator const base2, difference_type len2,
+                     Compare compare, Projection projection)
             -> void
         {
             assert( len1 > 0 );
             assert( len2 > 0 );
             assert( base1 + len1 == base2 );
+
             using utility::iter_move;
+            auto&& comp = utility::as_function(compare);
+            auto&& proj = utility::as_function(projection);
 
             resize_buffer(len2);
             destruct_n<rvalue_reference> d(0);
@@ -596,7 +602,6 @@ namespace cppsort::detail
             }
 
             int minGallop( minGallop_ );
-            auto&& proj = utility::as_function(proj_);
 
             // outer:
             while (true) {
@@ -608,7 +613,7 @@ namespace cppsort::detail
                     assert( len1 > 0 );
                     assert( len2 > 1 );
 
-                    if (comp_.lt(proj(*cursor2), proj(*cursor1))) {
+                    if (comp(proj(*cursor2), proj(*cursor1))) {
                         *dest = iter_move(cursor1);
                         --dest;
                         --cursor1;
@@ -639,7 +644,7 @@ namespace cppsort::detail
                     assert( len1 > 0 );
                     assert( len2 > 1 );
 
-                    count1 = len1 - gallopRight(*cursor2, base1, len1, len1 - 1);
+                    count1 = len1 - gallopRight(*cursor2, base1, len1, len1 - 1, compare, projection);
                     if (count1 != 0) {
                         dest    -= count1;
                         cursor1 -= count1;
@@ -659,7 +664,7 @@ namespace cppsort::detail
                         break;
                     }
 
-                    count2 = len2 - gallopLeft(*cursor1, buffer.get(), len2, len2 - 1);
+                    count2 = len2 - gallopLeft(*cursor1, buffer.get(), len2, len2 - 1, compare, projection);
                     if (count2 != 0) {
                         dest    -= count2;
                         cursor2 -= count2;
@@ -716,10 +721,9 @@ namespace cppsort::detail
                  Compare compare, Projection projection)
         -> void
     {
-        using compare_t = remove_cvref_t<decltype(utility::as_function(compare))>;
-        TimSort<RandomAccessIterator, compare_t, Projection>::sort(std::move(first), std::move(last),
-                                                                   utility::as_function(compare),
-                                                                   std::move(projection));
+        TimSort<RandomAccessIterator, Compare, Projection>::sort(
+            std::move(first), std::move(last),
+            std::move(compare), std::move(projection));
     }
 }
 

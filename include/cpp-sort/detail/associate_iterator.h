@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2018 Morwenn
+ * Copyright (c) 2016-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -64,7 +64,12 @@ namespace cppsort::detail
         association(association&&) = delete;
         association& operator=(const association&) = delete;
 
-        association(Iterator it, Data data):
+        association(Iterator it, const Data& data):
+            it(std::move(it)),
+            data(data)
+        {}
+
+        association(Iterator it, Data&& data):
             it(std::move(it)),
             data(std::move(data))
         {}
