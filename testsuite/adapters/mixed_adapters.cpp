@@ -78,11 +78,11 @@ TEST_CASE( "indirect sort with Schwartzian transform",
 
     SECTION( "schwartz_adapter over schwartz_adapter" )
     {
-        constexpr auto sort = cppsort::schwartz_adapter(
-            cppsort::schwartz_adapter(
-                cppsort::selection_sort
-            )
-        );
+        constexpr cppsort::schwartz_adapter<
+            cppsort::schwartz_adapter<
+                cppsort::selection_sorter
+            >
+        > sort;
 
         cppsort::sort(sort, collection, &wrapper::value);
         CHECK( helpers::is_sorted(std::begin(collection), std::end(collection),
@@ -91,11 +91,11 @@ TEST_CASE( "indirect sort with Schwartzian transform",
 
     SECTION( "indirect_adapter over indirect_adapter" )
     {
-        constexpr auto sort = cppsort::indirect_adapter(
-            cppsort::indirect_adapter(
-                cppsort::selection_sort
-            )
-        );
+        constexpr cppsort::indirect_adapter<
+            cppsort::indirect_adapter<
+                cppsort::selection_sorter
+            >
+        > sort;
 
         cppsort::sort(sort, collection, &wrapper::value);
         CHECK( helpers::is_sorted(std::begin(collection), std::end(collection),
