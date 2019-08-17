@@ -91,7 +91,10 @@ namespace cppsort::detail
             }
     };
 
-    template<typename Compare, typename=typename std::is_empty<Compare>::type>
+    template<
+        typename Compare,
+        bool = std::is_empty<Compare>::value && std::is_default_constructible<Compare>::value
+    >
     struct three_way_compare:
         three_way_compare_base<three_way_compare<Compare>>
     {
@@ -113,7 +116,7 @@ namespace cppsort::detail
     };
 
     template<typename Compare>
-    struct three_way_compare<Compare, std::true_type>:
+    struct three_way_compare<Compare, true>:
         three_way_compare_base<three_way_compare<Compare>>
     {
         constexpr three_way_compare(Compare) {}
@@ -129,7 +132,7 @@ namespace cppsort::detail
     };
 
     template<>
-    struct three_way_compare<std::less<>, std::true_type>:
+    struct three_way_compare<std::less<>, true>:
         three_way_compare_base<three_way_compare<std::less<>>>
     {
         constexpr three_way_compare(std::less<>) {}
@@ -156,7 +159,7 @@ namespace cppsort::detail
     };
 
     template<>
-    struct three_way_compare<std::greater<>, std::true_type>:
+    struct three_way_compare<std::greater<>, true>:
         three_way_compare_base<three_way_compare<std::greater<>>>
     {
         constexpr three_way_compare(std::greater<>) {}

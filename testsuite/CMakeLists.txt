@@ -26,6 +26,7 @@ set(
     adapters/counting_adapter.cpp
     adapters/every_adapter_fptr.cpp
     adapters/every_adapter_internal_compare.cpp
+    adapters/every_adapter_stateful_sorter.cpp
     adapters/hybrid_adapter_is_stable.cpp
     adapters/hybrid_adapter_many_sorters.cpp
     adapters/hybrid_adapter_nested.cpp
@@ -52,6 +53,7 @@ set(
     comparators/case_insensitive_less.cpp
     comparators/natural_less.cpp
     comparators/total_less.cpp
+    comparators/transparent_comparators.cpp
 )
 
 set(
@@ -110,6 +112,7 @@ set(
 set(
     UTILITY_TESTS
 
+    utility/adapter_storage.cpp
     utility/as_projection.cpp
     utility/as_projection_iterable.cpp
     utility/branchless_traits.cpp
@@ -184,12 +187,15 @@ endif()
 
 # Optionally enable sanitizers
 if (UNIX AND SANITIZE)
-    target_compile_options(cpp-sort-testsuite PRIVATE -fsanitize=${SANITIZE})
+    target_compile_options(cpp-sort-testsuite PRIVATE
+        -fsanitize=${SANITIZE}
+        -fno-sanitize-recover=all
+    )
     set_property(
         TARGET
             cpp-sort-testsuite
         APPEND_STRING PROPERTY LINK_FLAGS
-            " -fsanitize=${SANITIZE} -fno-sanitize-recover=all"
+            " -fsanitize=${SANITIZE}"
     )
 endif()
 

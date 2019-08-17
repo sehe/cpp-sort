@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -78,7 +78,10 @@ namespace cppsort
     >
     struct small_array_adapter<FixedSizeSorter, std::index_sequence<Indices...>>:
         fixed_sorter_traits<FixedSizeSorter>,
-        sorter_facade_fptr<small_array_adapter<FixedSizeSorter, std::index_sequence<Indices...>>>
+        detail::sorter_facade_fptr<
+            small_array_adapter<FixedSizeSorter, std::index_sequence<Indices...>>,
+            (std::is_empty<FixedSizeSorter<Indices>>::value && ...)
+        >
     {
         template<
             typename T,
@@ -113,7 +116,10 @@ namespace cppsort
     template<template<std::size_t> typename FixedSizeSorter>
     struct small_array_adapter<FixedSizeSorter, void>:
         fixed_sorter_traits<FixedSizeSorter>,
-        sorter_facade_fptr<small_array_adapter<FixedSizeSorter, void>>
+        detail::sorter_facade_fptr<
+            small_array_adapter<FixedSizeSorter, void>,
+            true // TODO: how can we do better?
+        >
     {
         template<
             typename T,

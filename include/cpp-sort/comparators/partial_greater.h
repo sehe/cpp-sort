@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2017 Morwenn
+ * Copyright (c) 2016-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -69,17 +69,21 @@ namespace cppsort
             {
                 return partial_greater(std::forward<T>(lhs), std::forward<U>(rhs));
             }
+
+            using is_transparent = void;
         };
     }
 
-    inline constexpr detail::partial_greater_fn partial_greater{};
+    using partial_greater_t = detail::partial_greater_fn;
+
+    inline constexpr partial_greater_t partial_greater{};
 
     // Branchless traits
 
     namespace utility
     {
         template<typename T>
-        struct is_probably_branchless_comparison<decltype(partial_greater), T>:
+        struct is_probably_branchless_comparison<cppsort::partial_greater_t, T>:
             std::is_arithmetic<T>
         {};
     }

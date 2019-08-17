@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2018 Morwenn
+ * Copyright (c) 2016-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -127,6 +127,8 @@ namespace cppsort
                 {
                     return adl_barrier::refined_case_insensitive_less_locale_fn<T>(loc);
                 }
+
+                using is_transparent = void;
         };
 
         struct case_insensitive_less_fn
@@ -154,6 +156,8 @@ namespace cppsort
             {
                 return case_insensitive_less_locale_fn(loc);
             }
+
+            using is_transparent = void;
         };
 
         namespace adl_barrier
@@ -283,7 +287,9 @@ namespace cppsort
         }
     }
 
-    inline constexpr detail::case_insensitive_less_fn case_insensitive_less{};
+    using case_insensitive_less_t = detail::case_insensitive_less_fn;
+
+    inline constexpr case_insensitive_less_t case_insensitive_less{};
 }
 
 #endif // CPPSORT_COMPARATORS_CASE_INSENSITIVE_LESS_H_

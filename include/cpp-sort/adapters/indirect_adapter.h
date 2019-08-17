@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -34,6 +34,7 @@
 #include <vector>
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
+#include <cpp-sort/utility/adapter_storage.h>
 #include <cpp-sort/utility/as_function.h>
 #include <cpp-sort/utility/functional.h>
 #include <cpp-sort/utility/iter_move.h>
@@ -49,8 +50,15 @@ namespace cppsort
     {
         template<typename Sorter>
         struct indirect_adapter_impl:
+            utility::adapter_storage<Sorter>,
             check_is_always_stable<Sorter>
         {
+            indirect_adapter_impl() = default;
+
+            constexpr explicit indirect_adapter_impl(Sorter&& sorter):
+                utility::adapter_storage<Sorter>(std::move(sorter))
+            {}
+
             template<
                 typename RandomAccessIterator,
                 typename Compare = std::less<>,
@@ -119,8 +127,10 @@ namespace cppsort
                     exit_function.release();
                 }
 
-                return Sorter{}(std::begin(iterators), std::end(iterators), std::move(compare),
-                                [&proj](RandomAccessIterator it) -> decltype(auto) { return proj(*it); });
+                return this->get()(std::begin(iterators), std::end(iterators), std::move(compare),
+                                   [&proj](RandomAccessIterator it) -> decltype(auto) {
+                                       return proj(*it);
+                                   });
             }
 
             ////////////////////////////////////////////////////////////
@@ -136,8 +146,9 @@ namespace cppsort
     {
         indirect_adapter() = default;
 
-        // Automatic deduction guide
-        constexpr explicit indirect_adapter(Sorter) noexcept {}
+        constexpr explicit indirect_adapter(Sorter sorter):
+            sorter_facade<detail::indirect_adapter_impl<Sorter>>(std::move(sorter))
+        {}
     };
 
     ////////////////////////////////////////////////////////////
