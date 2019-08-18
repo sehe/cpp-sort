@@ -10,12 +10,6 @@ _apt: &apt-common
     - llvm-toolchain-xenial-7
     - ubuntu-toolchain-r-test
 
-cache:
-  ccache: true
-  directories:
-    - build
-    - .mtime_cache
-
 matrix:
   include:
 
