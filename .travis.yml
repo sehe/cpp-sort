@@ -3,7 +3,7 @@ dist: xenial
 
 _packages:
   - &clang clang-7
-  - &gcc g++-8
+  - &gcc g++-9
 
 _apt: &apt-common
   sources:
@@ -181,7 +181,7 @@ install:
   - if [[ $TRAVIS_OS_NAME = "osx" ]]; then
         export PATH="/usr/local/opt/ccache/libexec:$PATH";
     fi
-  - if [[ $CXX = "g++" ]]; then export CXX="g++-8"; fi
+  - if [[ $CXX = "g++" ]]; then export CXX="g++-9"; fi
   - if [[ $CXX = "clang++" ]]; then export CXX="clang++-7"; fi
 
 script:
