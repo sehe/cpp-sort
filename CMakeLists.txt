@@ -19,7 +19,7 @@ target_include_directories(cpp-sort INTERFACE
     $<INSTALL_INTERFACE:include>
 )
 
-target_compile_features(cpp-sort INTERFACE cxx_std_17)
+target_compile_features(cpp-sort INTERFACE cxx_std_20)
 
 add_library(cpp-sort::cpp-sort ALIAS cpp-sort)
 
