@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <cstddef>
 #include <type_traits>
 
 namespace cppsort::detail
@@ -96,18 +95,6 @@ namespace cppsort::detail
 
     template<template<typename...> class Op, typename... Args>
     using detected_t = typename detector<nonesuch, void, Op, Args...>::type;
-
-    ////////////////////////////////////////////////////////////
-    // std::remove_cvref from C++20
-
-    template<typename T>
-    struct remove_cvref
-    {
-        using type = std::remove_cv_t<std::remove_reference_t<T>>;
-    };
-
-    template<typename T>
-    using remove_cvref_t = typename remove_cvref<T>::type;
 
     ////////////////////////////////////////////////////////////
     // Type traits to take __int128 into account even when the

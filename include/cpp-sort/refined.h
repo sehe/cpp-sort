@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2018 Morwenn
+ * Copyright (c) 2016-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -75,7 +75,7 @@ namespace cppsort
     }
 
     template<typename T, typename Function>
-    using refined_t = detail::remove_cvref_t<
+    using refined_t = std::remove_cvref_t<
         decltype(refined<std::decay_t<T>>(std::declval<Function&>()))
     >;
 }

@@ -52,7 +52,7 @@ namespace cppsort::detail
         auto&& proj = utility::as_function(projection);
 
         using difference_type = difference_type_t<BidirectionalIterator>;
-        using rvalue_reference = remove_cvref_t<rvalue_reference_t<BidirectionalIterator>>;
+        using rvalue_reference = std::remove_cvref_t<rvalue_reference_t<BidirectionalIterator>>;
         std::vector<rvalue_reference> dropped;
 
         difference_type num_dropped_in_row = 0;

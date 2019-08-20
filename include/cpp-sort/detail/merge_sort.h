@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,7 @@
 // Headers
 ////////////////////////////////////////////////////////////
 #include <iterator>
+#include <type_traits>
 #include <utility>
 #include <cpp-sort/utility/as_function.h>
 #include "bubble_sort.h"
@@ -35,12 +36,11 @@
 #include "insertion_sort.h"
 #include "iterator_traits.h"
 #include "memory.h"
-#include "type_traits.h"
 
 namespace cppsort::detail
 {
     template<typename T>
-    using buffer_ptr = temporary_buffer<remove_cvref_t<T>>;
+    using buffer_ptr = temporary_buffer<std::remove_cvref_t<T>>;
 
     template<typename ForwardIterator, typename Compare, typename Projection>
     auto merge_sort_impl(ForwardIterator first, difference_type_t<ForwardIterator> size,

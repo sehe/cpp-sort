@@ -42,8 +42,6 @@
 #include "move.h"
 #include "swap_if.h"
 #include "swap_ranges.h"
-#include "type_traits.h"
-
 
 #if __has_include(<ext/bitmap_allocator.h>)
 #   include <ext/bitmap_allocator.h>
@@ -426,7 +424,7 @@ namespace cppsort::detail
         // Number of sub-iterators
         auto full_size = size * first.size();
 
-        using rvalue_reference = remove_cvref_t<rvalue_reference_t<RandomAccessIterator>>;
+        using rvalue_reference = std::remove_cvref_t<rvalue_reference_t<RandomAccessIterator>>;
         std::unique_ptr<rvalue_reference, operator_deleter> cache(
             static_cast<rvalue_reference*>(::operator new(full_size * sizeof(rvalue_reference))),
             operator_deleter(full_size * sizeof(rvalue_reference))

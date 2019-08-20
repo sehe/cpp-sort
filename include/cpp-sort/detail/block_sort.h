@@ -29,7 +29,6 @@
 #include "move.h"
 #include "rotate.h"
 #include "swap_ranges.h"
-#include "type_traits.h"
 #include "upper_bound.h"
 
 namespace cppsort::detail
@@ -333,7 +332,7 @@ namespace cppsort::detail
             -> void
         {
             using utility::iter_swap;
-            using rvalue_reference = remove_cvref_t<rvalue_reference_t<RandomAccessIterator>>;
+            using rvalue_reference = std::remove_cvref_t<rvalue_reference_t<RandomAccessIterator>>;
             using difference_type = difference_type_t<RandomAccessIterator>;
 
             difference_type size = std::distance(first, last);

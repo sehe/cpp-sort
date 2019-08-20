@@ -39,7 +39,6 @@
 #include <cpp-sort/utility/as_function.h>
 #include <cpp-sort/utility/functional.h>
 #include "../std_list_traits.h"
-#include "../type_traits.h"
 #include "../upper_bound.h"
 
 namespace cppsort
@@ -216,8 +215,8 @@ namespace cppsort
         template<
             typename First, typename... Args,
             typename = std::enable_if_t<
-                not detail::is_std_list<detail::remove_cvref_t<First>>::value &&
-                not detail::is_std_forward_list<detail::remove_cvref_t<First>>::value
+                not detail::is_std_list<std::remove_cvref_t<First>>::value &&
+                not detail::is_std_forward_list<std::remove_cvref_t<First>>::value
             >
         >
         auto operator()(First&& first, Args&&... args) const

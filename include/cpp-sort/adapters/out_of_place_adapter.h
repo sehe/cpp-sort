@@ -31,6 +31,7 @@
 #include <iterator>
 #include <memory>
 #include <new>
+#include <type_traits>
 #include <utility>
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
@@ -51,7 +52,7 @@ namespace cppsort
             -> decltype(auto)
         {
             using utility::iter_move;
-            using rvalue_reference = remove_cvref_t<rvalue_reference_t<ForwardIterator>>;
+            using rvalue_reference = std::remove_cvref_t<rvalue_reference_t<ForwardIterator>>;
 
             // Copy the collection into contiguous memory buffer
             std::unique_ptr<rvalue_reference, operator_deleter> buffer(

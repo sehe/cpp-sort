@@ -61,7 +61,7 @@ namespace cppsort
         auto case_insensitive_less(const T& lhs, const T& rhs, const std::locale& loc)
             -> bool
         {
-            using char_type = remove_cvref_t<decltype(*std::begin(lhs))>;
+            using char_type = std::remove_cvref_t<decltype(*std::begin(lhs))>;
             const auto& ct = std::use_facet<std::ctype<char_type>>(loc);
 
             return std::lexicographical_compare(std::begin(lhs), std::end(lhs),
@@ -188,7 +188,7 @@ namespace cppsort
             {
                 private:
 
-                    using char_type = remove_cvref_t<decltype(*std::begin(std::declval<T&>()))>;
+                    using char_type = std::remove_cvref_t<decltype(*std::begin(std::declval<T&>()))>;
 
                     std::locale loc;
                     const std::ctype<char_type>& ct;
@@ -228,7 +228,7 @@ namespace cppsort
             {
                 private:
 
-                    using char_type = remove_cvref_t<decltype(*std::begin(std::declval<T&>()))>;
+                    using char_type = std::remove_cvref_t<decltype(*std::begin(std::declval<T&>()))>;
 
                     std::locale loc;
                     const std::ctype<char_type>& ct;

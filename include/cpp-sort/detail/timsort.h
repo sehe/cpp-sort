@@ -48,7 +48,6 @@
 #include "move.h"
 #include "reverse.h"
 #include "rotate.h"
-#include "type_traits.h"
 #include "upper_bound.h"
 
 namespace cppsort::detail
@@ -72,7 +71,7 @@ namespace cppsort::detail
     {
         using iterator = RandomAccessIterator;
         using value_type = value_type_t<iterator>;
-        using rvalue_reference = remove_cvref_t<rvalue_reference_t<iterator>>;
+        using rvalue_reference = std::remove_cvref_t<rvalue_reference_t<iterator>>;
         using difference_type = difference_type_t<iterator>;
 
         static constexpr int min_merge = 32;

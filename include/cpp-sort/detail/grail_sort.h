@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <iterator>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 #include <cpp-sort/utility/as_function.h>
 #include <cpp-sort/utility/iter_move.h>
@@ -28,7 +29,6 @@
 #include "rotate.h"
 #include "swap_ranges.h"
 #include "three_way_compare.h"
-#include "type_traits.h"
 #include "upper_bound.h"
 
 namespace cppsort::detail
@@ -705,7 +705,7 @@ namespace grail
                     Compare compare, Projection projection)
         -> void
     {
-        using rvalue_reference = remove_cvref_t<rvalue_reference_t<RandomAccessIterator>>;
+        using rvalue_reference = std::remove_cvref_t<rvalue_reference_t<RandomAccessIterator>>;
 
         // Allocate temporary buffer
         auto size = std::distance(first, last);

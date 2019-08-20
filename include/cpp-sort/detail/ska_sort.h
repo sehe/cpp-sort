@@ -1,5 +1,5 @@
 //          Copyright Malte Skarupke 2016.
-// Modified in 2017-2018 by Morwenn for inclusion into cpp-sort.
+// Modified in 2017-2019 by Morwenn for inclusion into cpp-sort.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See http://www.boost.org/LICENSE_1_0.txt)
 //
@@ -493,9 +493,9 @@ namespace cppsort::detail
 
     template<typename CurrentSubKey, typename T>
     struct ListElementSubKey:
-        SubKey<remove_cvref_t<decltype(std::declval<T>()[0])>>
+        SubKey<std::remove_cvref_t<decltype(std::declval<T>()[0])>>
     {
-        using base = SubKey<remove_cvref_t<decltype(std::declval<T>()[0])>>;
+        using base = SubKey<std::remove_cvref_t<decltype(std::declval<T>()[0])>>;
         using next = ListElementSubKey;
 
         template<typename U>
@@ -984,7 +984,7 @@ namespace cppsort::detail
 
     template<typename T>
     using has_indexing_operator_t
-        = remove_cvref_t<decltype(std::declval<T&>()[0])>;
+        = std::remove_cvref_t<decltype(std::declval<T&>()[0])>;
 
     template<template<typename...> typename Op, typename... Args>
     using is_index_ska_sortable = is_ska_sortable<detected_t<Op, Args...>>;
