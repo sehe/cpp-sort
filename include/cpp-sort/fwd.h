@@ -51,6 +51,7 @@ namespace cppsort
     struct float_spread_sorter;
     template<typename BufferProvider>
     struct grail_sorter;
+    template<int D=2>
     struct heap_sorter;
     struct insertion_sorter;
     struct integer_spread_sorter;

@@ -41,7 +41,8 @@ TEMPLATE_TEST_CASE( "test sorter with all_equal distribution", "[distributions]"
                     cppsort::grail_sorter<
                         cppsort::utility::dynamic_buffer<cppsort::utility::sqrt>
                     >,
-                    cppsort::heap_sorter,
+                    cppsort::heap_sorter<>,
+                    cppsort::heap_sorter<5>,
                     cppsort::merge_sorter,
                     cppsort::pdq_sorter,
                     cppsort::poplar_sorter,

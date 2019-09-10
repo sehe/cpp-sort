@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2017 Morwenn
+ * Copyright (c) 2015-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,9 +31,11 @@
 #include <iterator>
 #include <type_traits>
 #include <utility>
+#include <cpp-sort/fwd.h>
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
 #include <cpp-sort/utility/functional.h>
+#include "../detail/dary_heapsort.h"
 #include "../detail/heapsort.h"
 #include "../detail/iterator_traits.h"
 
@@ -44,6 +46,7 @@ namespace cppsort
 
     namespace detail
     {
+        template<int D>
         struct heap_sorter_impl
         {
             template<
@@ -66,8 +69,14 @@ namespace cppsort
                     "heap_sorter requires at least random-access iterators"
                 );
 
-                heapsort(std::move(first), std::move(last),
-                         std::move(compare), std::move(projection));
+                if constexpr (D == 2) {
+                    heapsort(std::move(first), std::move(last),
+                             std::move(compare), std::move(projection));
+                } else {
+                    make_d_ary_heap<D>(first, last, compare, projection);
+                    sort_d_ary_heap<D>(std::move(first), std::move(last),
+                                       std::move(compare), std::move(projection));
+                }
             }
 
             ////////////////////////////////////////////////////////////
@@ -78,9 +87,12 @@ namespace cppsort
         };
     }
 
+    template<int D>
     struct heap_sorter:
-        sorter_facade<detail::heap_sorter_impl>
-    {};
+        sorter_facade<detail::heap_sorter_impl<D>>
+    {
+        static_assert(D >= 2, "d-ary heap_sorter must have d >= 2");
+    };
 
     ////////////////////////////////////////////////////////////
     // Sort function

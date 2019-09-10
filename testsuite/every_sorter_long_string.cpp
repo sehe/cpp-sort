@@ -71,7 +71,8 @@ TEMPLATE_TEST_CASE( "test every sorter with long std::string", "[sorters]",
                     cppsort::grail_sorter<
                         cppsort::utility::dynamic_buffer<cppsort::utility::sqrt>
                     >,
-                    cppsort::heap_sorter,
+                    cppsort::heap_sorter<>,
+                    cppsort::heap_sorter<5>,
                     cppsort::insertion_sorter,
                     cppsort::merge_insertion_sorter,
                     cppsort::merge_sorter,
