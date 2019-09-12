@@ -58,8 +58,7 @@ namespace detail
                   RandomAccessIterator it)
         -> bool
     {
-        auto first_child = first_child_it<D>(first, it);
-        return first_child < last;
+        return (it - first) * (D - 1) < last - it - 1;
     }
 
     template<int D, typename RandomAccessIterator, typename Compare, typename Projection>
