@@ -167,7 +167,10 @@ parts of the benchmarks come from there as well.
 of a Timsort](https://github.com/gfx/cpp-TimSort).
 
 * The three algorithms used by `spread_sorter` come from Steven Ross [Boost.Sort
-module](http://www.boost.org/doc/libs/1_59_0/libs/sort/doc/html/index.html).
+module](https://www.boost.org/doc/libs/1_71_0/libs/sort/doc/html/index.html).
+
+* The algorithm used by `heap_sorter` for `D > 2` comes from Tim Blechmann's
+implementation of a d-ary heap in the [Boost.Heap module](https://www.boost.org/doc/libs/1_71_0/doc/html/heap.html).
 
 * [`utility::as_function`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#as_function),
 [`utility::static_const`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#static_const),
