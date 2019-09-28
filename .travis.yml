@@ -83,7 +83,7 @@ matrix:
 
     - os: linux
       sudo: required
-      env: BUILD_TYPE=Debug SANITIZE=address CMAKE_GENERATOR="Unix Makefiles"
+      env: BUILD_TYPE=Debug SANITIZE=address,pointer-compare,pointer-subtract CMAKE_GENERATOR="Unix Makefiles"
       addons:
         apt:
           <<: *apt-common
