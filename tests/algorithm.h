@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CPPSORT_TESTSUITE_ALGORITHM_H_
-#define CPPSORT_TESTSUITE_ALGORITHM_H_
+#ifndef CPPSORT_TESTS_ALGORITHM_H_
+#define CPPSORT_TESTS_ALGORITHM_H_
 
 ////////////////////////////////////////////////////////////
 // Headers
@@ -73,4 +73,4 @@ namespace helpers
     }
 }
 
-#endif // CPPSORT_TESTSUITE_ALGORITHM_H_
+#endif // CPPSORT_TESTS_ALGORITHM_H_

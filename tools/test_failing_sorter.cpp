@@ -9,7 +9,7 @@
 #include <cpp-sort/sorters.h>
 #include <cpp-sort/utility/buffer.h>
 #include <cpp-sort/utility/functional.h>
-#include "../testsuite/distributions.h"
+#include "../test/distributions.h"
 
 struct shuffled_string:
     dist::distribution<shuffled_string>

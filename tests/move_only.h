@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CPPSORT_TESTSUITE_MOVE_ONLY_H_
-#define CPPSORT_TESTSUITE_MOVE_ONLY_H_
+#ifndef CPPSORT_TESTS_MOVE_ONLY_H_
+#define CPPSORT_TESTS_MOVE_ONLY_H_
 
 ////////////////////////////////////////////////////////////
 // Headers
@@ -134,4 +134,4 @@ inline namespace i_need_a_namespace_for_proper_adl
     }
 }
 
-#endif // CPPSORT_TESTSUITE_MOVE_ONLY_H_
+#endif // CPPSORT_TESTS_MOVE_ONLY_H_
