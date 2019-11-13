@@ -1,13 +1,15 @@
 language: cpp
 dist: xenial
+sudo: required
 
 _packages:
-  - &clang clang-8
+  - &clang clang-9
   - &gcc g++-9
 
 _apt: &apt-common
   sources:
-    - llvm-toolchain-xenial-8
+    - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main'
+      key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     - ubuntu-toolchain-r-test
 
 matrix:
@@ -182,7 +184,7 @@ install:
         export PATH="/usr/local/opt/ccache/libexec:$PATH";
     fi
   - if [[ $CXX = "g++" ]]; then export CXX="g++-9"; fi
-  - if [[ $CXX = "clang++" ]]; then export CXX="clang++-8"; fi
+  - if [[ $CXX = "clang++" ]]; then export CXX="clang++-9"; fi
 
 script:
   - cmake -H. -Bbuild
