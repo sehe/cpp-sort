@@ -30,7 +30,6 @@
 #include <functional>
 #include <iterator>
 #include <memory>
-#include <tuple>
 #include <type_traits>
 #include <utility>
 #include <cpp-sort/sorter_facade.h>
@@ -58,40 +57,26 @@ namespace cppsort
         {
             private:
 
-                using projection_t = decltype(utility::as_function(std::declval<Projection&>()));
                 using compare_t = decltype(utility::as_function(std::declval<Compare&>()));
-                std::tuple<compare_t, projection_t> data;
+                using projection_t = decltype(utility::as_function(std::declval<Projection&>()));
+                [[no_unique_address]] compare_t comp;
+                [[no_unique_address]] projection_t proj;
 
             public:
 
                 stable_compare(Compare compare, Projection projection={}):
-                    data(utility::as_function(compare), utility::as_function(projection))
+                    comp(utility::as_function(compare)),
+                    proj(utility::as_function(projection))
                 {}
-
-                auto compare() const
-                    -> compare_t
-                {
-                    return std::get<0>(data);
-                }
-
-                auto projection() const
-                    -> projection_t
-                {
-                    return std::get<1>(data);
-                }
 
                 template<typename T, typename U>
                 auto operator()(T&& lhs, U&& rhs)
                     -> bool
                 {
-                    if (std::get<0>(data)(std::get<1>(data)(std::forward<T>(lhs).get()),
-                                          std::get<1>(data)(std::forward<U>(rhs).get())))
-                    {
+                    if (comp(proj(std::forward<T>(lhs).get()), proj(std::forward<U>(rhs).get()))) {
                         return true;
                     }
-                    if (std::get<0>(data)(std::get<1>(data)(std::forward<U>(rhs).get()),
-                                          std::get<1>(data)(std::forward<T>(lhs).get())))
-                    {
+                    if (comp(proj(std::forward<U>(rhs).get()), proj(std::forward<T>(lhs).get()))) {
                         return false;
                     }
                     return lhs.data < rhs.data;

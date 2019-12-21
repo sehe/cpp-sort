@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2017 Morwenn
+ * Copyright (c) 2015-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <tuple>
 #include <utility>
 #include <cpp-sort/utility/as_function.h>
 
@@ -38,21 +37,23 @@ namespace cppsort::detail
     {
         private:
 
-            // Pack compare and projection for EBCO
-            std::tuple<Compare, Projection> data;
+            using compare_t = decltype(utility::as_function(std::declval<Compare&>()));
+            using projection_t = decltype(utility::as_function(std::declval<Projection&>()));
+            [[no_unique_address]] compare_t comp;
+            [[no_unique_address]] projection_t proj;
 
         public:
 
             indirect_compare(Compare compare, Projection projection):
-                data(std::move(compare), std::move(projection))
+                comp(utility::as_function(compare)),
+                proj(utility::as_function(projection))
             {}
 
             template<typename Iterator>
             auto operator()(Iterator lhs, Iterator rhs)
-                -> bool
+                noexcept(noexcept(comp(proj(*lhs), proj(*rhs))))
+                -> decltype(comp(proj(*lhs), proj(*rhs)))
             {
-                auto&& comp = utility::as_function(std::get<0>(data));
-                auto&& proj = utility::as_function(std::get<1>(data));
                 return comp(proj(*lhs), proj(*rhs));
             }
     };

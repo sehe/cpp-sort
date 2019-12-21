@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2017 Morwenn
+ * Copyright (c) 2016-2019 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,6 @@
 ////////////////////////////////////////////////////////////
 // Headers
 ////////////////////////////////////////////////////////////
-#include <tuple>
 #include <utility>
 #include <cpp-sort/utility/as_function.h>
 
@@ -40,35 +39,22 @@ namespace cppsort::detail
 
             using compare_t = decltype(utility::as_function(std::declval<Compare&>()));
             using projection_t = decltype(utility::as_function(std::declval<Projection&>()));
-            std::tuple<compare_t, projection_t> data;
+            [[no_unique_address]] compare_t comp;
+            [[no_unique_address]] projection_t proj;
 
         public:
 
             projection_compare(Compare compare, Projection projection):
-                data(utility::as_function(compare), utility::as_function(projection))
+                comp(utility::as_function(compare)),
+                proj(utility::as_function(projection))
             {}
-
-            auto compare() const
-                -> compare_t
-            {
-                return std::get<0>(data);
-            }
-
-            auto projection() const
-                -> projection_t
-            {
-                return std::get<1>(data);
-            }
 
             template<typename T, typename U>
             auto operator()(T&& lhs, U&& rhs)
-                noexcept(noexcept(std::get<0>(data)(std::get<1>(data)(std::forward<T>(lhs)),
-                                                    std::get<1>(data)(std::forward<U>(rhs)))))
-                -> decltype(std::get<0>(data)(std::get<1>(data)(std::forward<T>(lhs)),
-                                              std::get<1>(data)(std::forward<U>(rhs))))
+                noexcept(noexcept(comp(proj(std::forward<T>(lhs)), proj(std::forward<U>(rhs)))))
+                -> decltype(comp(proj(std::forward<T>(lhs)), proj(std::forward<U>(rhs))))
             {
-                return std::get<0>(data)(std::get<1>(data)(std::forward<T>(lhs)),
-                                         std::get<1>(data)(std::forward<U>(rhs)));
+                return comp(proj(std::forward<T>(lhs)), proj(std::forward<U>(rhs)));
             }
     };
 }
