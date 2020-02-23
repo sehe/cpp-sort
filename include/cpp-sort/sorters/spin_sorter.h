@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2019 Morwenn
+ * Copyright (c) 2019-2020 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -21,8 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-#ifndef CPPSORT_SORTERS_COUNTING_SORTER_H_
-#define CPPSORT_SORTERS_COUNTING_SORTER_H_
+#ifndef CPPSORT_SORTERS_SPIN_SORTER_H_
+#define CPPSORT_SORTERS_SPIN_SORTER_H_
 
 ////////////////////////////////////////////////////////////
 // Headers
@@ -32,9 +32,10 @@
 #include <type_traits>
 #include <utility>
 #include <cpp-sort/sorter_facade.h>
-#include "../detail/counting_sort.h"
+#include <cpp-sort/sorter_traits.h>
+#include <cpp-sort/utility/functional.h>
 #include "../detail/iterator_traits.h"
-#include "../detail/type_traits.h"
+#include "../detail/spinsort.h"
 
 namespace cppsort
 {
@@ -43,58 +44,48 @@ namespace cppsort
 
     namespace detail
     {
-        struct counting_sorter_impl
+        struct spin_sorter_impl
         {
-            template<typename ForwardIterator>
-            auto operator()(ForwardIterator first, ForwardIterator last) const
-                -> std::enable_if_t<
-                    detail::is_integral<value_type_t<ForwardIterator>>::value
+            template<
+                typename RandomAccessIterator,
+                typename Compare = std::less<>,
+                typename Projection = utility::identity,
+                typename = std::enable_if_t<
+                    is_projection_iterator_v<Projection, RandomAccessIterator, Compare>
                 >
+            >
+            auto operator()(RandomAccessIterator first, RandomAccessIterator last,
+                            Compare compare={}, Projection projection={}) const
+                -> void
             {
                 static_assert(
                     std::is_base_of_v<
-                        std::forward_iterator_tag,
-                        iterator_category_t<ForwardIterator>
+                        std::random_access_iterator_tag,
+                        iterator_category_t<RandomAccessIterator>
                     >,
-                    "counting_sorter requires at least forward iterators"
+                    "spin_sorter requires at least random-access iterators"
                 );
 
-                counting_sort(std::move(first), std::move(last));
-            }
-
-            template<typename ForwardIterator>
-            auto operator()(ForwardIterator first, ForwardIterator last, std::greater<>) const
-                -> std::enable_if_t<
-                    detail::is_integral<value_type_t<ForwardIterator>>::value
-                >
-            {
-                static_assert(
-                    std::is_base_of_v<
-                        std::forward_iterator_tag,
-                        iterator_category_t<ForwardIterator>
-                    >,
-                    "counting_sorter requires at least forward iterators"
-                );
-
-                reverse_counting_sort(std::move(first), std::move(last));
+                spinsort(std::move(first), std::move(last),
+                         std::move(compare), std::move(projection));
             }
 
             ////////////////////////////////////////////////////////////
             // Sorter traits
 
-            using iterator_category = std::forward_iterator_tag;
+            using iterator_category = std::random_access_iterator_tag;
             using is_always_stable = std::false_type;
         };
     }
 
-    struct counting_sorter:
-        sorter_facade<detail::counting_sorter_impl>
+    struct spin_sorter:
+        sorter_facade<detail::spin_sorter_impl>
     {};
 
     ////////////////////////////////////////////////////////////
     // Sort function
 
-    inline constexpr counting_sorter counting_sort{};
+    inline constexpr spin_sorter spin_sort{};
 }
 
-#endif // CPPSORT_SORTERS_COUNTING_SORTER_H_
+#endif // CPPSORT_SORTERS_SPIN_SORTER_H_

@@ -12,6 +12,12 @@ _apt: &apt-common
       key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     - ubuntu-toolchain-r-test
 
+cache:
+  ccache: true
+  directories:
+    - build
+    - .mtime_cache
+
 matrix:
   include:
 
@@ -170,7 +176,7 @@ matrix:
       after_success:
         - conan remote add bintray https://api.bintray.com/conan/morwenn/cpp-sort
         - conan user -r bintray -p ${CONAN_PASSWORD} morwenn
-        - conan upload --all -r bintray cpp-sort/1.5.0@morwenn/stable
+        - conan upload --all -r bintray cpp-sort/1.4.0@morwenn/stable
 
 before_install:
   - if [[ $TRAVIS_OS_NAME = "linux" && $CXX = "clang++" ]]; then
@@ -195,6 +201,7 @@ script:
           -DENABLE_COVERAGE=${ENABLE_COVERAGE}
           -G"${CMAKE_GENERATOR}"
           -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+          -DBUILD_EXAMPLES=ON
   - mtime_cache -g mtime_cache_globs.txt -c .mtime_cache/cache.json
   - cmake --build build --config ${BUILD_TYPE} -j 2
   - cd build

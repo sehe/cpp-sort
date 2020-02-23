@@ -93,7 +93,6 @@ namespace cppsort
     {
         verge_adapter() = default;
 
-        // Automatic deduction guide
         constexpr explicit verge_adapter(FallbackSorter sorter):
             sorter_facade<detail::verge_adapter_impl<FallbackSorter>>(std::move(sorter))
         {}

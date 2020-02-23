@@ -31,7 +31,7 @@
 #include <cpp-sort/utility/functional.h>
 #include "../distributions.h"
 
-TEMPLATE_TEST_CASE( "test sorter with all_equal distribution", "[distributions]",
+TEMPLATE_TEST_CASE( "test random-access sorters with all_equal distribution", "[distributions]",
                     cppsort::block_sorter<>,
                     cppsort::block_sorter<
                         cppsort::utility::dynamic_buffer<cppsort::utility::half>
@@ -50,6 +50,7 @@ TEMPLATE_TEST_CASE( "test sorter with all_equal distribution", "[distributions]"
                     cppsort::quick_sorter,
                     cppsort::ska_sorter,
                     cppsort::smooth_sorter,
+                    cppsort::spin_sorter,
                     cppsort::split_sorter,
                     cppsort::spread_sorter,
                     cppsort::std_sorter,

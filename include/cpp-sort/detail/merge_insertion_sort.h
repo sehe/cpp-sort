@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2019 Morwenn
+ * Copyright (c) 2016-2018 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -433,16 +433,10 @@ namespace cppsort::detail
         std::unique_ptr<rvalue_reference, destruct_n<rvalue_reference>&> h2(cache.get(), d);
 
         rvalue_reference* buff_it = cache.get();
-        for (auto&& it: chain)
-        {
+        for (auto&& it: chain) {
             auto begin = it.base();
             auto end = begin + it.size();
-            for (auto inner_it = begin ; inner_it != end ; ++d, (void) ++inner_it)
-            {
-                using utility::iter_move;
-                ::new(buff_it) rvalue_reference(iter_move(inner_it));
-                ++buff_it;
-            }
+            buff_it = uninitialized_move(begin, end, buff_it, d);
         }
         detail::move(cache.get(), cache.get() + full_size, first.base());
     }

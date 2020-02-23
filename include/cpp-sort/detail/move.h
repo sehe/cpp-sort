@@ -31,6 +31,9 @@
 #include <iterator>
 #include <type_traits>
 #include <cpp-sort/utility/iter_move.h>
+#include "iterator_traits.h"
+#include "memory.h"
+#include "type_traits.h"
 
 namespace cppsort::detail
 {
@@ -117,6 +120,41 @@ namespace cppsort::detail
             *--result = iter_move(--last);
         }
         return result;
+    }
+
+    ////////////////////////////////////////////////////////////
+    // uninitialized_move
+
+    template<typename InputIterator, typename T>
+    auto uninitialized_move_impl(std::true_type, InputIterator first, InputIterator last,
+                                 T* result, destruct_n<T>&)
+        -> T*
+    {
+        return detail::move(first, last, result);
+    }
+
+    template<typename InputIterator, typename T>
+    auto uninitialized_move_impl(std::false_type, InputIterator first, InputIterator last,
+                                 T* result, destruct_n<T>& destroyer)
+        -> T*
+    {
+        for (; first != last; ++first, (void) ++result, ++destroyer) {
+            using utility::iter_move;
+            ::new(static_cast<void*>(result)) T(iter_move(first));
+        }
+        return result;
+    }
+
+    template<typename InputIterator, typename T>
+    auto uninitialized_move(InputIterator first, InputIterator last, T* result, destruct_n<T>& destroyer)
+        -> T*
+    {
+        using truth_type = std::bool_constant<
+            std::is_trivial<value_type_t<InputIterator>>::value &&
+            std::is_trivial<T>::value
+        >;
+        return uninitialized_move_impl(truth_type{}, std::move(first), std::move(last),
+                                       std::move(result), destroyer);
     }
 }
 

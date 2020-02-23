@@ -377,7 +377,6 @@ namespace cppsort
 
     ////////////////////////////////////////////////////////////
     // Adapter
-
     template<typename... Sorters>
     struct hybrid_adapter:
         detail::flatten_fold<
