@@ -6,7 +6,5 @@ macro(cppsort_add_warnings target)
         -Wdouble-promotion
         $<$<CXX_COMPILER_ID:GNU>:-Wlogical-op -Wuseless-cast -Wzero-as-null-pointer-constant>
         $<$<CXX_COMPILER_ID:GNU>:-Wduplicated-cond -Wduplicated-branches>
-        # The warning when initializing an std::array is just too much of a bother
-        $<$<CXX_COMPILER_ID:Clang>:-Wno-missing-braces>
     )
 endmacro()
