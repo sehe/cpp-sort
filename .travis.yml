@@ -111,7 +111,7 @@ matrix:
 
     # OSX clang
 #    - os: osx
-#      osx_image: xcode11
+#      osx_image: xcode12
 #      env: BUILD_TYPE=Debug USE_VALGRIND=true CMAKE_GENERATOR="Xcode"
 #      addons:
 #        homebrew:
@@ -123,7 +123,7 @@ matrix:
 #      compiler: clang
 
     - os: osx
-      osx_image: xcode11
+      osx_image: xcode12
       env: BUILD_TYPE=Release CMAKE_GENERATOR="Xcode"
       addons:
         homebrew:
