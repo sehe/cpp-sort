@@ -2,7 +2,7 @@
     pdqsort.h - Pattern-defeating quicksort.
 
     Copyright (c) 2015-2017 Orson Peters
-    Modified in 2015-2019 by Morwenn for inclusion into cpp-sort
+    Modified in 2015-2020 by Morwenn for inclusion into cpp-sort
 
     This software is provided 'as-is', without any express or implied warranty. In no event will the
     authors be held liable for any damages arising from the use of this software.
@@ -76,9 +76,9 @@ namespace cppsort::detail
             auto&& comp = utility::as_function(compare);
             auto&& proj = utility::as_function(projection);
 
-            for (RandomAccessIterator cur = begin + 1; cur != end; ++cur) {
-                RandomAccessIterator sift = cur;
-                RandomAccessIterator sift_1 = cur - 1;
+            for (auto cur = std::next(begin); cur != end; ++cur) {
+                auto sift = cur;
+                auto sift_1 = std::prev(cur);
 
                 // Compare first so we can avoid 2 moves for an element already positioned correctly.
                 if (comp(proj(*sift), proj(*sift_1))) {
@@ -109,12 +109,10 @@ namespace cppsort::detail
             auto&& comp = utility::as_function(compare);
             auto&& proj = utility::as_function(projection);
 
-            int limit = 0;
-            for (RandomAccessIterator cur = begin + 1; cur != end; ++cur) {
-                if (limit > partial_insertion_sort_limit) return false;
-
-                RandomAccessIterator sift = cur;
-                RandomAccessIterator sift_1 = cur - 1;
+            difference_type_t<RandomAccessIterator> limit = 0;
+            for (auto cur = std::next(begin); cur != end; ++cur) {
+                auto sift = cur;
+                auto sift_1 = std::prev(cur);
 
                 // Compare first so we can avoid 2 moves for an element already positioned correctly.
                 if (comp(proj(*sift), proj(*sift_1))) {
@@ -128,6 +126,8 @@ namespace cppsort::detail
                     *sift = std::move(tmp);
                     limit += cur - sift;
                 }
+
+                if (limit > partial_insertion_sort_limit) return false;
             }
 
             return true;
@@ -275,7 +275,7 @@ namespace cppsort::detail
             }
 
             int l_size = 0, r_size = 0;
-            int unknown_left = (last - first) - ((num_r || num_l) ? block_size : 0);
+            int unknown_left = int(last - first) - ((num_r || num_l) ? block_size : 0);
             if (num_r) {
                 // Handle leftover block by assigning the unknown elements to the other block.
                 l_size = unknown_left;
@@ -442,7 +442,7 @@ namespace cppsort::detail
 
             // Use a while loop for tail recursion elimination.
             while (true) {
-                difference_type size = std::distance(begin, end);
+                difference_type size = end - begin;
 
                 // Insertion sort is faster for small arrays.
                 if (size < insertion_sort_threshold) {
@@ -482,8 +482,8 @@ namespace cppsort::detail
                     partition_right(begin, end, compare, projection);
 
                 // Check for a highly unbalanced partition.
-                difference_type l_size = std::distance(begin, pivot_pos);
-                difference_type r_size = std::distance(pivot_pos + 1, end);
+                difference_type l_size = pivot_pos - begin;
+                difference_type r_size = end - (pivot_pos + 1);
                 bool highly_unbalanced = l_size < size / 8 || r_size < size / 8;
 
                 // If we got a highly unbalanced partition we shuffle elements to break many patterns.
@@ -549,7 +549,7 @@ namespace cppsort::detail
             utility::is_probably_branchless_comparison_v<Compare, projected_type> &&
             utility::is_probably_branchless_projection_v<Projection, value_type>;
 
-        if (std::distance(begin, end) < 2) return;
+        if ((end - begin) < 2) return;
         pdqsort_detail::pdqsort_loop<RandomAccessIterator, Compare, Projection, is_branchless>(
             std::move(begin), std::move(end),
             std::move(compare), std::move(projection),

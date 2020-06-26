@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2019 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -79,7 +79,7 @@ namespace cppsort
 
                 // Copy the iterators in a vector
                 std::vector<RandomAccessIterator> iterators;
-                iterators.reserve(std::distance(first, last));
+                iterators.reserve(last - first);
                 for (RandomAccessIterator it = first ; it != last ; ++it) {
                     iterators.push_back(it);
                 }
@@ -90,7 +90,7 @@ namespace cppsort
                     ////////////////////////////////////////////////////////////
                     // Move the values according the iterator's positions
 
-                    std::vector<bool> sorted(std::distance(first, last), false);
+                    std::vector<bool> sorted(last - first, false);
 
                     // Element where the current cycle starts
                     RandomAccessIterator start = first;
@@ -98,7 +98,7 @@ namespace cppsort
                     while (start != last) {
                         // Find the element to put in current's place
                         RandomAccessIterator current = start;
-                        auto next_pos = std::distance(first, current);
+                        auto next_pos = current - first;
                         RandomAccessIterator next = iterators[next_pos];
                         sorted[next_pos] = true;
 
@@ -108,7 +108,7 @@ namespace cppsort
                             while (next != start) {
                                 *current = iter_move(next);
                                 current = next;
-                                auto next_pos = std::distance(first, next);
+                                auto next_pos = next - first;
                                 next = iterators[next_pos];
                                 sorted[next_pos] = true;
                             }
@@ -127,7 +127,7 @@ namespace cppsort
                     exit_function.release();
                 }
 
-                return this->get()(std::begin(iterators), std::end(iterators), std::move(compare),
+                return this->get()(iterators.begin(), iterators.end(), std::move(compare),
                                    [&proj](RandomAccessIterator it) -> decltype(auto) {
                                        return proj(*it);
                                    });

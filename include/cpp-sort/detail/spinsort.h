@@ -57,15 +57,23 @@ namespace detail
                 not_fn_t() = delete;
 
                 explicit not_fn_t(Predicate predicate):
-                    predicate(predicate)
+                    predicate(std::move(predicate))
                 {}
 
                 template<typename T1, typename T2>
-                auto operator()(const T1& x, const T2& y)
+                auto operator()(T1&& x, T2&& y)
                     -> bool
                 {
                     auto&& pred = utility::as_function(predicate);
-                    return not pred(x, y);
+                    return not pred(std::forward<T1>(x), std::forward<T2>(y));
+                }
+
+                template<typename T1, typename T2>
+                auto operator()(T1&& x, T2&& y) const
+                    -> bool
+                {
+                    auto&& pred = utility::as_function(predicate);
+                    return not pred(std::forward<T1>(x), std::forward<T2>(y));
                 }
         };
 

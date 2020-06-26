@@ -6,20 +6,27 @@ option(USE_VALGRIND "Whether to run the tests with Valgrind" OFF)
 option(ENABLE_COVERAGE "Whether to produce code coverage" OFF)
 set(SANITIZE "" CACHE STRING "Comma-separated list of options to pass to -fsanitize")
 
-# Fetch and configure Catch2 for the tests
-FetchContent_Declare(
-    catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2
-    GIT_TAG master
-)
-
-FetchContent_GetProperties(catch2)
-if (NOT catch2_POPULATED)
-    FetchContent_Populate(catch2)
-    add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
-    list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
-    include(Catch)
+# Find & configure Catch2 for the tests
+message(STATUS "Looking for Catch2 2.6.0+")
+find_package(Catch2 2.6.0 QUIET)
+if (TARGET Catch2::Catch2)
+    get_target_property(Catch2_INCLUDE_DIRECTORY Catch2::Catch2 INTERFACE_INCLUDE_DIRECTORIES)
+    message(STATUS "Catch2 found: ${Catch2_INCLUDE_DIRECTORY}")
+else()
+    message(STATUS "Catch2 not found")
+    FetchContent_Declare(
+        catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2
+        GIT_TAG master
+    )
+    FetchContent_GetProperties(catch2)
+    if (NOT catch2_POPULATED)
+        FetchContent_Populate(catch2)
+        add_subdirectory(${catch2_SOURCE_DIR} ${catch2_BINARY_DIR})
+        list(APPEND CMAKE_MODULE_PATH ${catch2_SOURCE_DIR}/contrib)
+    endif()
 endif()
+include(Catch)
 
 macro(configure_tests target)
     target_link_libraries(${target} PRIVATE
@@ -82,6 +89,7 @@ add_executable(main-tests
     every_sorter_long_string.cpp
     every_sorter_move_only.cpp
     every_sorter_no_post_iterator.cpp
+    every_sorter_non_const_compare.cpp
     every_sorter_span.cpp
     is_stable.cpp
     rebind_iterator_category.cpp
@@ -96,6 +104,7 @@ add_executable(main-tests
     adapters/counting_adapter.cpp
     adapters/every_adapter_fptr.cpp
     adapters/every_adapter_internal_compare.cpp
+    adapters/every_adapter_non_const_compare.cpp
     adapters/every_adapter_stateful_sorter.cpp
     adapters/hybrid_adapter_is_stable.cpp
     adapters/hybrid_adapter_many_sorters.cpp
@@ -172,6 +181,7 @@ add_executable(main-tests
     utility/as_projection.cpp
     utility/as_projection_iterable.cpp
     utility/branchless_traits.cpp
+    utility/chainable_projections.cpp
     utility/buffer.cpp
     utility/iter_swap.cpp
 )
