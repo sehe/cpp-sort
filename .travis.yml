@@ -4,7 +4,7 @@ sudo: required
 
 _packages:
   - &clang clang-9
-  - &gcc g++-9
+  - &gcc g++-10
 
 _apt: &apt-common
   sources:
@@ -168,7 +168,7 @@ install:
   - if [[ $TRAVIS_OS_NAME = "osx" ]]; then
         export PATH="/usr/local/opt/ccache/libexec:$PATH";
     fi
-  - if [[ $CXX = "g++" ]]; then export CXX="g++-9"; fi
+  - if [[ $CXX = "g++" ]]; then export CXX="g++-10"; fi
   - if [[ $CXX = "clang++" ]]; then export CXX="clang++-9"; fi
 
 script:
