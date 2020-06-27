@@ -1,5 +1,5 @@
 language: cpp
-dist: xenial
+dist: bionic
 sudo: required
 
 _packages:
@@ -8,7 +8,7 @@ _packages:
 
 _apt: &apt-common
   sources:
-    - sourceline: 'deb https://apt.llvm.org/xenial/ llvm-toolchain-xenial-9 main'
+    - sourceline: 'deb https://apt.llvm.org/bionic/ llvm-toolchain-bionic-9 main'
       key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
     - ubuntu-toolchain-r-test
 
