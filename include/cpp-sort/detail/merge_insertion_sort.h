@@ -175,12 +175,6 @@ namespace cppsort::detail
                 return lhs.base() == rhs.base();
             }
 
-            friend auto operator!=(const group_iterator& lhs, const group_iterator& rhs)
-                -> bool
-            {
-                return lhs.base() != rhs.base();
-            }
-
             ////////////////////////////////////////////////////////////
             // Relational operators
 

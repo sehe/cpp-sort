@@ -168,13 +168,6 @@ namespace detail
                 return lhs.base() == rhs.base();
             }
 
-            constexpr
-            friend auto operator!=(const fixed_size_list_iterator& lhs, const fixed_size_list_iterator& rhs)
-                -> bool
-            {
-                return lhs.base() != rhs.base();
-            }
-
         private:
 
             fixed_size_list_node<T>* ptr_;

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2016-2019 Morwenn
+ * Copyright (c) 2016-2020 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -277,12 +277,6 @@ namespace cppsort::detail
                 -> bool
             {
                 return lhs.base() == rhs.base();
-            }
-
-            friend auto operator!=(const associate_iterator& lhs, const associate_iterator& rhs)
-                -> bool
-            {
-                return lhs.base() != rhs.base();
             }
 
             ////////////////////////////////////////////////////////////
