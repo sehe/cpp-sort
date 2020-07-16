@@ -12,7 +12,7 @@ Some improvements suggested by:
 Phil Endecott and Frank Gennari
 */
 
-// Modified in 2015-2017 by Morwenn for inclusion into cpp-sort
+// Modified in 2015-2020 by Morwenn for inclusion into cpp-sort
 
 #ifndef CPPSORT_DETAIL_SPREADSORT_DETAIL_STRING_SORT_H_
 #define CPPSORT_DETAIL_SPREADSORT_DETAIL_STRING_SORT_H_
@@ -25,7 +25,6 @@ Phil Endecott and Frank Gennari
 #include <cstring>
 #include <iterator>
 #include <memory>
-#include <tuple>
 #include <type_traits>
 #include <vector>
 #include <cpp-sort/utility/functional.h>
@@ -85,17 +84,18 @@ namespace cppsort::detail::spreadsort::detail
     struct offset_less_than
     {
         offset_less_than(std::size_t char_offset, Projection projection):
-            data(char_offset, projection)
+            projection(std::move(projection)),
+            char_offset(char_offset)
         {}
 
         template<typename T, typename U>
         auto operator()(const T& x, const U& y) const
             -> bool
         {
-            auto&& proj = utility::as_function(std::get<1>(data));
+            auto&& proj = utility::as_function(projection);
 
             std::size_t minSize = (std::min)(proj(x).size(), proj(y).size());
-            for (std::size_t u = std::get<0>(data) ; u < minSize ; ++u)
+            for (std::size_t u = char_offset ; u < minSize ; ++u)
             {
                 static_assert(sizeof(proj(x)[u]) == sizeof(Unsigned_char_type));
                 if (static_cast<Unsigned_char_type>(proj(x)[u]) !=
@@ -108,8 +108,8 @@ namespace cppsort::detail::spreadsort::detail
             return proj(x).size() < proj(y).size();
         }
 
-      // Pack fchar_offset and projection
-      std::tuple<std::size_t, Projection> data;
+        [[no_unique_address]] Projection projection;
+        std::size_t char_offset;
     };
 
     //Compares strings assuming they are identical up to char_offset
@@ -117,17 +117,18 @@ namespace cppsort::detail::spreadsort::detail
     struct offset_greater_than
     {
         offset_greater_than(std::size_t char_offset, Projection projection):
-            data(char_offset, projection)
+            projection(std::move(projection)),
+            char_offset(char_offset)
         {}
 
         template<typename T, typename U>
         auto operator()(const T& x, const U& y) const
             -> bool
         {
-            auto&& proj = utility::as_function(std::get<1>(data));
+            auto&& proj = utility::as_function(projection);
 
             std::size_t minSize = (std::min)(proj(x).size(), proj(y).size());
-            for (std::size_t u = std::get<0>(data) ; u < minSize ; ++u)
+            for (std::size_t u = char_offset ; u < minSize ; ++u)
             {
                 static_assert(sizeof(proj(x)[u]) == sizeof(Unsigned_char_type));
                 if (static_cast<Unsigned_char_type>(proj(x)[u]) !=
@@ -140,8 +141,8 @@ namespace cppsort::detail::spreadsort::detail
             return proj(x).size() > proj(y).size();
         }
 
-      // Pack fchar_offset and projection
-      std::tuple<std::size_t, Projection> data;
+        [[no_unique_address]] Projection projection;
+        std::size_t char_offset;
     };
 
     //String sorting recursive implementation
