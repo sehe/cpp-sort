@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015-2017 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -57,7 +57,7 @@ namespace cppsort::detail
             }
 
             // Accessible member data
-            Compare compare;
+            [[no_unique_address]] Compare compare;
 
         private:
 
