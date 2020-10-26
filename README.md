@@ -1,5 +1,5 @@
-[![Latest Release](https://img.shields.io/badge/release-cpp--sort%2F1.7.0-blue.svg)](https://github.com/Morwenn/cpp-sort/releases)
-[![Conan Package](https://img.shields.io/badge/conan-1.7.0-blue.svg)](https://bintray.com/conan/conan-center/cpp-sort%3A_)
+[![Latest Release](https://img.shields.io/badge/release-cpp--sort%2F1.8.1-blue.svg)](https://github.com/Morwenn/cpp-sort/releases/tag/1.8.1)
+[![Conan Package](https://img.shields.io/badge/conan-1.8.1-blue.svg)](https://conan.io/center/cpp-sort?version=1.8.1)
 [![Build Status](https://travis-ci.org/Morwenn/cpp-sort.svg?branch=master)](https://travis-ci.org/Morwenn/cpp-sort)
 [![License](https://img.shields.io/:license-mit-blue.svg)](https://doge.mit-license.org)
 [![Code Coverage](https://codecov.io/gh/Morwenn/cpp-sort/branch/master/graph/badge.svg)](https://codecov.io/gh/Morwenn/cpp-sort)
@@ -18,13 +18,13 @@ should be trivial enough:
 ```cpp
 #include <array>
 #include <iostream>
-#include <cpp-sort/sort.h>
+#include <cpp-sort/sorters/smooth_sorter.h>
 
 int main()
 {
-    std::array<int, 5u> arr = { 5, 8, 3, 2, 9 };
-    cppsort::sort(arr);
-    
+    std::array<int, 5> arr = { 5, 8, 3, 2, 9 };
+    cppsort::smooth_sort(arr);
+
     // prints 2 3 5 8 9
     for (int val: arr) {
         std::cout << val << ' ';
@@ -34,8 +34,8 @@ int main()
 
 # The main features & the extra features
 
-**cpp-sort** actually provides a full set of sorting-related features. Here are the main
-building blocks of the library:
+**cpp-sort** provides a full set of sorting-related features. Here are the main building blocks
+of the library:
 * Every sorting algorithm exists as a function object called a [sorter](https://github.com/Morwenn/cpp-sort/wiki/Sorters)
 * Sorters can be wrapped in [sorter adapters](https://github.com/Morwenn/cpp-sort/wiki/Sorter-adapters) to augment their behaviour
 * The library provides a [sorter facade](https://github.com/Morwenn/cpp-sort/wiki/Sorter-facade) to easily build sorters
@@ -63,15 +63,14 @@ int main()
 
     // When used, this sorter will use a pattern-defeating quicksort
     // to sort random-access collections, and a mergesort otherwise
-    using sorter = cppsort::hybrid_adapter<
+    cppsort::hybrid_adapter<
         cppsort::pdq_sorter,
         cppsort::merge_sorter
-    >;
-    sorter sort;
+    > sorter;
 
     // Sort li and vec in reverse order using their value member
-    sort(li, std::greater<>{}, &wrapper::value);
-    sort(vec, std::greater<>{}, &wrapper::value);
+    sorter(li, std::greater<>{}, &wrapper::value);
+    sorter(vec, std::greater<>{}, &wrapper::value);
 
     assert(std::equal(
         std::begin(li), std::end(li),
@@ -100,13 +99,13 @@ and extending **cpp-sort** in [the wiki](https://github.com/Morwenn/cpp-sort/wik
 
 The following graph has been generated with a script found in the benchmarks
 directory. It shows the time needed for a sorting algorithm to sort one million
-shuffled `std::array<int, N>` of sizes 0 to 15. It compares the sorters generally
+shuffled `std::array<int, N>` of sizes 0 to 32. It compares the sorters generally
 used to sort small arrays:
 
-![small shuffled int arrays](https://i.imgur.com/mpV0Qur.png)
+![Benchmark speed of small sorts with increasing size for std::array<int>](https://i.imgur.com/dOa3vyl.png)
 
-These results were generated with MinGW g++ 6.1.0 with the compiler options
-`-std=c++1z -O2 -march=native`. That benchmark is just an example to make this
+These results were generated with MinGW-w64 g++ 10.1 with the compiler options
+`-std=c++2a -O3 -march=native`. That benchmark is merely an example to make this
 introduction look good. You can find more commented benchmarks in the [dedicated
 wiki page](https://github.com/Morwenn/cpp-sort/wiki/Benchmarks).
 
@@ -202,14 +201,17 @@ of the algorithm.
 * The algorithm used by `grail_sorter` has been adapted from Mrrl's
 [GrailSort](https://github.com/Mrrl/GrailSort), hence the name.
 
+* The algorithm used by `indirect_adapter` with forward or bidirectional iterators is a
+slightly modified version of Matthew Bentley's [indiesort](https://github.com/mattreecebentley/plf_indiesort).
+
 * The algorithms 0 to 16 used by `sorting_network_sorter` have been generated with
 Perl's [`Algorithm::Networksort` module](https://metacpan.org/pod/release/JGAMBLE/Algorithm-Networksort-1.30/lib/Algorithm/Networksort.pm).
 
-* The algorithms 17 and 18 used by `sorting_network_sorter` correspond to the ones found
-by Symmetry and Evolution based Network Sort Optimization (SENSO) published in *Using
+* The algorithm 17 used by `sorting_network_sorter` correspond to the ones found by
+Symmetry and Evolution based Network Sort Optimization (SENSO) published in *Using
 Symmetry and Evolutionary Search to Minimize Sorting Networks* by Valsalam and Miikkulainen.
 
-* The algorithms 19 to 26 and 28 used by `sorting_network_sorter` have been found and
+* The algorithms 18 to 26 and 28 used by `sorting_network_sorter` have been found and
 proposed for inclusion by Bert Dobbelaere with his [SorterHunter project](https://github.com/bertdobbelaere/SorterHunter).
 Huge thanks for this contribution :) You can find a full list of most well-known sorting
 networks up to 32 inputs on his website.
@@ -224,3 +226,6 @@ kaayy's [`sortingnetwork.tex`](https://github.com/kaayy/kaayy-s-code-sinppets),
 slightly adapted to be 0-based and draw the network from top to bottom.
 
 * The CMake tools embedded in the projects include [RWTH-HPC/CMake-codecov](https://github.com/RWTH-HPC/CMake-codecov).
+
+* Some of the benchmarks use a [colorblind-friendly palette](https://gist.github.com/thriveth/8560036)
+developed by Thøger Rivera-Thorsen.

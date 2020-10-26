@@ -186,7 +186,7 @@ namespace cppsort::detail
             CPPSORT_ASSERT(n >= 0);
 
             difference_type r = 0;
-            while (n >= min_merge) {
+            while (n >= 2 * min_merge) {
                 r |= (n & 1);
                 n >>= 1;
             }

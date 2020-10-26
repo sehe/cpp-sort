@@ -1,3 +1,6 @@
+# Copyright (c) 2015-2020 Morwenn
+# SPDX-License-Identifier: MIT
+
 include(cpp-sort-utils)
 include(FetchContent)
 
@@ -17,7 +20,7 @@ else()
     FetchContent_Declare(
         catch2
         GIT_REPOSITORY https://github.com/catchorg/Catch2
-        GIT_TAG master
+        GIT_TAG v2.13.2
     )
     FetchContent_GetProperties(catch2)
     if (NOT catch2_POPULATED)
@@ -29,6 +32,10 @@ endif()
 include(Catch)
 
 macro(configure_tests target)
+    # Make testing tools easiyl available to tests
+    # regardless of the directory of the test
+    target_include_directories(${target} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+
     target_link_libraries(${target} PRIVATE
         Catch2::Catch2
         cpp-sort::cpp-sort
@@ -40,6 +47,8 @@ macro(configure_tests target)
         CATCH_CONFIG_DISABLE_MATCHERS
         # Enable assertions for more thorough tests
         CPPSORT_ENABLE_ASSERTIONS
+        # We test deprecated code but we don't want it to warn
+        CPPSORT_DISABLE_DEPRECATION_WARNINGS
     )
 
     # More warnings and settings
@@ -87,6 +96,7 @@ add_executable(main-tests
     every_sorter.cpp
     every_sorter_internal_compare.cpp
     every_sorter_long_string.cpp
+    every_sorter_move_compare_projection.cpp
     every_sorter_move_only.cpp
     every_sorter_no_post_iterator.cpp
     every_sorter_non_const_compare.cpp
@@ -158,6 +168,7 @@ add_executable(main-tests
     probes/rem.cpp
     probes/runs.cpp
     probes/relations.cpp
+    probes/every_probe_move_compare_projection.cpp
 
     # Sorters tests
     sorters/counting_sorter.cpp
@@ -194,8 +205,9 @@ if (NOT "${SANITIZE}" MATCHES "address|memory")
         # algorithms that have a fallback when heap exhaustion occurs,
         # which isn't something we want for the main tests
         main.cpp
-        new_delete.cpp
+        testing-tools/new_delete.cpp
         heap_memory_exhaustion.cpp
+        probes/every_probe_heap_memory_exhaustion.cpp
     )
     configure_tests(heap-memory-exhaustion-tests)
 endif()

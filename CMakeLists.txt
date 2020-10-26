@@ -1,8 +1,11 @@
+# Copyright (c) 2015-2020 Morwenn
+# SPDX-License-Identifier: MIT
+
 cmake_minimum_required(VERSION 3.11.0)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-project(cpp-sort VERSION 1.7.0 LANGUAGES CXX)
+project(cpp-sort VERSION 1.8.1 LANGUAGES CXX)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
