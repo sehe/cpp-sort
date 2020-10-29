@@ -5,7 +5,7 @@
 #include <functional>
 #include <iterator>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters/hybrid_adapter.h>
 #include <cpp-sort/sorter_facade.h>
 
@@ -83,7 +83,7 @@ TEST_CASE( "hybrid_adapter over partial comparison sorter",
         CHECK( res2 == sorter_type::ascending );
     }
 
-    SECTION( "with std::less<>" )
+    SECTION( "with std::less<" )
     {
         sorter_type res1 = sorter(vec, std::less<>{});
         CHECK( res1 == sorter_type::ascending );
@@ -92,7 +92,7 @@ TEST_CASE( "hybrid_adapter over partial comparison sorter",
         CHECK( res2 == sorter_type::ascending );
     }
 
-    SECTION( "with std::greater<>" )
+    SECTION( "with std::greater<" )
     {
         sorter_type res1 = sorter(vec, std::greater<>{});
         CHECK( res1 == sorter_type::descending );

@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters/counting_adapter.h>
 #include <cpp-sort/adapters/hybrid_adapter.h>
 #include <cpp-sort/adapters/indirect_adapter.h>
@@ -23,6 +23,7 @@
 #include <cpp-sort/sorters/poplar_sorter.h>
 #include <cpp-sort/sorters/selection_sorter.h>
 #include <testing-tools/algorithm.h>
+#include <testing-tools/catch_rng_seed.h>
 #include <testing-tools/distributions.h>
 
 namespace

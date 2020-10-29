@@ -5,7 +5,7 @@
 #include <forward_list>
 #include <iterator>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/probes/rem.h>
 #include <testing-tools/internal_compare.h>
 

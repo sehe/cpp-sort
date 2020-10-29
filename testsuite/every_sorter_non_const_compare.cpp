@@ -5,9 +5,10 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <cpp-sort/sorters.h>
 #include <cpp-sort/utility/buffer.h>
+#include <testing-tools/catch_rng_seed.h>
 #include <testing-tools/distributions.h>
 
 TEMPLATE_TEST_CASE( "test extended compatibility with LWG 3031", "[sorters]",

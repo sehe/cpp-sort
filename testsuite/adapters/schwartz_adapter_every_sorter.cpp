@@ -9,11 +9,12 @@
 #include <random>
 #include <string>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <cpp-sort/adapters/schwartz_adapter.h>
 #include <cpp-sort/sorters.h>
 #include <cpp-sort/utility/buffer.h>
 #include <testing-tools/algorithm.h>
+#include <testing-tools/catch_rng_seed.h>
 
 namespace
 {
@@ -25,7 +26,7 @@ namespace
     };
 }
 
-TEMPLATE_TEST_CASE( "every random-access sorter with Schwartzian transform adapter", "[schwartz_adapter]",
+TEMPLATE_TEST_CASE( "every sorter with Schwartzian transform adapter", "[schwartz_adapter]",
                     cppsort::block_sorter<cppsort::utility::fixed_buffer<0>>,
                     cppsort::default_sorter,
                     cppsort::drop_merge_sorter,

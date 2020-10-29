@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2016-2019 Morwenn
+ * Copyright (c) 2016-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #include <forward_list>
 #include <iterator>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/probes/max.h>
 #include <testing-tools/distributions.h>
 #include <testing-tools/internal_compare.h>

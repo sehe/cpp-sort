@@ -8,7 +8,7 @@
 #include <iterator>
 #include <type_traits>
 #include <utility>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters/hybrid_adapter.h>
 #include <cpp-sort/adapters/small_array_adapter.h>
 #include <cpp-sort/sorter_facade.h>

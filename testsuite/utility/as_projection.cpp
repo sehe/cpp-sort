@@ -9,11 +9,12 @@
 #include <random>
 #include <utility>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters/stable_adapter.h>
 #include <cpp-sort/sorters/default_sorter.h>
 #include <cpp-sort/sorters/pdq_sorter.h>
 #include <cpp-sort/utility/functional.h>
+#include <testing-tools/catch_rng_seed.h>
 
 namespace
 {

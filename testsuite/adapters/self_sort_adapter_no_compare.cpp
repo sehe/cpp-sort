@@ -8,7 +8,7 @@
 #include <list>
 #include <utility>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters/self_sort_adapter.h>
 #include <cpp-sort/sorters/verge_sorter.h>
 #include <cpp-sort/sorter_facade.h>

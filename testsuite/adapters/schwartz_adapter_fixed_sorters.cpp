@@ -6,11 +6,12 @@
 #include <array>
 #include <iterator>
 #include <random>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters/schwartz_adapter.h>
 #include <cpp-sort/adapters/small_array_adapter.h>
 #include <cpp-sort/fixed_sorters.h>
 #include <testing-tools/algorithm.h>
+#include <testing-tools/catch_rng_seed.h>
 
 TEST_CASE( "Schwartzian transform adapter with fixed-size sorters",
            "[schwartz_adapter]" )

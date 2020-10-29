@@ -10,11 +10,12 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
 #include <cpp-sort/sorters/selection_sorter.h>
 #include <cpp-sort/utility/functional.h>
+#include <testing-tools/catch_rng_seed.h>
 
 namespace
 {

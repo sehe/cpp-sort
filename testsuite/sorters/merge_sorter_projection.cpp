@@ -9,9 +9,10 @@
 #include <list>
 #include <random>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/sorters/merge_sorter.h>
 #include <testing-tools/algorithm.h>
+#include <testing-tools/catch_rng_seed.h>
 
 TEST_CASE( "merge_sorter tests with projections",
            "[merge_sorter][projection]" )

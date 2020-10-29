@@ -7,7 +7,7 @@
 #include <iterator>
 #include <list>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters/container_aware_adapter.h>
 #include <cpp-sort/sorters/insertion_sorter.h>
 #include <cpp-sort/sorters/merge_sorter.h>

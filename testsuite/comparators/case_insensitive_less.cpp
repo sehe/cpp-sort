@@ -5,7 +5,7 @@
 #include <array>
 #include <locale>
 #include <string>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/comparators/case_insensitive_less.h>
 #include <cpp-sort/refined.h>
 #include <cpp-sort/sorters/heap_sorter.h>

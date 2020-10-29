@@ -8,9 +8,10 @@
 #include <random>
 #include <utility>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/sorters/spread_sorter.h>
 #include <testing-tools/algorithm.h>
+#include <testing-tools/catch_rng_seed.h>
 
 TEST_CASE( "spread_sorter tests with projections",
            "[spread_sorter][projection]" )

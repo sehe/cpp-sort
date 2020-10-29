@@ -7,7 +7,7 @@
 #include <iterator>
 #include <list>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_template_test_macros.hpp>
 #include <cpp-sort/probes.h>
 #include <testing-tools/distributions.h>
 #include <testing-tools/memory_exhaustion.h>

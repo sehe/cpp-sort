@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2019 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_TESTSUITE_DISTRIBUTIONS_H_
@@ -13,8 +13,8 @@
 #include <iterator>
 #include <random>
 #include <vector>
-#include <catch2/catch.hpp>
 #include <cpp-sort/detail/bitops.h>
+#include <testing-tools/catch_rng_seed.h>
 
 namespace dist
 {

@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <iterator>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/adapters.h>
 #include <cpp-sort/fixed_sorters.h>
 #include <cpp-sort/sorters/merge_sorter.h>
@@ -108,7 +108,7 @@ TEST_CASE( "test adapters extended compatibility with LWG 3031", "[adapters]" )
         CHECK( std::is_sorted(std::begin(li), std::end(li)) );
     }
 
-    SECTION( "stable_adapter<self_sort_adapter>" )
+    SECTION( "stable_adapter<self_sort_adapter" )
     {
         using sorter = cppsort::stable_adapter<
             cppsort::self_sort_adapter<cppsort::poplar_sorter>

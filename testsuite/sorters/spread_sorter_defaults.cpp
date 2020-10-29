@@ -8,9 +8,10 @@
 #include <numeric>
 #include <random>
 #include <vector>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cpp-sort/sorters/spread_sorter.h>
 #include <cpp-sort/utility/functional.h>
+#include <testing-tools/catch_rng_seed.h>
 
 TEST_CASE( "spread_sorter generate overloads",
            "[spread_sorter][sorter_facade]" )
@@ -22,7 +23,7 @@ TEST_CASE( "spread_sorter generate overloads",
     // Pseudo-random number engine
     std::mt19937_64 engine(Catch::rngSeed());
 
-    SECTION( "default operator() with std::less<>" )
+    SECTION( "default operator() with std::less<" )
     {
         std::vector<int> vec(100'000);
         std::iota(std::begin(vec), std::end(vec), 0);
