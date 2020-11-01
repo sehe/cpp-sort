@@ -6,7 +6,7 @@ While these function objects offer little more than regular sorting functions by
 #include <cpp-sort/sorters.h>
 ```
 
-Note that for every `foobar_sorter` described in this page, there is a corresponding `foobar_sort` global instance that allows not to care about the sorter abstraction as long as it is not needed (the instances are usable as regular function templates). The only sorter without a corresponding global instance is [`default_sorter`](https://github.com/Morwenn/cpp-sort/wiki/Sorters#default_sorter) since it mainly exists as a fallback sorter for the functions [`cppsort::sort` and `cppsort::stable_sort`](https://github.com/Morwenn/cpp-sort/wiki/Sorting-functions) when they are called without an explicit sorter.
+Note that for every `foobar_sorter` described in this page, there is a corresponding `foobar_sort` global instance that allows not to care about the sorter abstraction as long as it is not needed (the instances are usable as regular function templates). The only sorter without a corresponding global instance is [`default_sorter`](https://github.com/Morwenn/cpp-sort/wiki/Sorters#default_sorter).
 
 If you want to read more about sorters and/or write your own one, then you should have a look at [[the dedicated page|Writing a sorter]] or at [[a specific example|Writing a bubble_sorter]].
 
@@ -45,7 +45,7 @@ Whether this sorter works with types that are not default-constructible depends 
 
 ***WARNING:** `default_sorter` is deprecated in version 1.8.0 and removed in version 2.0.0, see [issue #168](https://github.com/Morwenn/cpp-sort/issues/167) for the rationale.*
 
-Sorter striving to use a sorting algorithm as optimized as possible. It is the fallback sorter used by [`cppsort::sort`](https://github.com/Morwenn/cpp-sort/wiki/sorting-function) when no sorter is given. The current implementation defines it as follows:
+Sorter striving to use a sorting algorithm as optimized as possible. The current implementation defines it as follows:
 
 ```cpp
 struct default_sorter:

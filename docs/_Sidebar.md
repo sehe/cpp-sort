@@ -1,7 +1,6 @@
 * [[Home]]
 * Sorting library
     * [[Library nomenclature]]
-    * [[Sorting functions]]
     * [[Sorters]]
     * [[Fixed-size sorters]]
     * [[Sorter adapters]]

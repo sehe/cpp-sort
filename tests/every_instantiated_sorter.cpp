@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Morwenn
+ * Copyright (c) 2016-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #include <algorithm>
@@ -17,9 +17,6 @@ TEST_CASE( "test every instantiated sorter", "[sorters]" )
     // under instantiated sorters that look like regular
     // functions, then it's even better, but we need to test
     // them to, just to be sure
-    //
-    // Only default_sorter doesn't have a standard instance
-    // since it is already used by default by cppsort::sort
 
     std::vector<long long int> collection; collection.reserve(35);
     auto distribution = dist::shuffled{};
