@@ -195,37 +195,6 @@ auto iter_swap(Iterator lhs, Iterator rhs)
     -> void;
 ```
 
-### `make_integer_range`
-
-```cpp
-#include <cpp-sort/utility/make_integer_range.h>
-```
-
-***WARNING:** `make_integer_range` and `make_index_range` are deprecated in version 1.8.0 and removed in version 2.0.0.*
-
-The class template `make_integer_range` can be used wherever an [`std::integer_sequence`](http://en.cppreference.com/w/cpp/utility/integer_sequence) can be used. An `integer_range` takes a type template parameter that shall be an integer type, then three integer template parameters which correspond to the beginning of the range, the end of the range and the « step ».
-
-```cpp
-template<
-    typename Integer,
-    Integer Begin,
-    Integer End,
-    Integer Step = 1
->
-using make_integer_range = /* implementation-defined */;
-```
-
-`make_index_range` is a specialization of `integer_range` for `std::size_t`.
-
-```cpp
-template<
-    std::size_t Begin,
-    std::size_t End,
-    std::size_t Step = 1u
->
-using make_index_range = make_integer_range<std::size_t, Begin, End, Step>;
-```
-
 ### `size`
 
 ```cpp
