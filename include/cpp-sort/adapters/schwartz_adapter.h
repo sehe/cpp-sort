@@ -107,7 +107,7 @@ namespace cppsort
             template<
                 typename ForwardIterable,
                 typename Compare = std::less<>,
-                typename Projection = utility::identity,
+                typename Projection = std::identity,
                 typename = std::enable_if_t<
                     is_projection_v<Projection, ForwardIterable, Compare>
                 >
@@ -123,7 +123,7 @@ namespace cppsort
             template<
                 typename ForwardIterator,
                 typename Compare = std::less<>,
-                typename Projection = utility::identity,
+                typename Projection = std::identity,
                 typename = std::enable_if_t<
                     is_projection_iterator_v<Projection, ForwardIterator, Compare>
                 >
@@ -161,19 +161,19 @@ namespace cppsort
             }
 
             template<typename ForwardIterable, typename Compare>
-            auto operator()(ForwardIterable&& iterable, Compare compare, utility::identity projection) const
+            auto operator()(ForwardIterable&& iterable, Compare compare, std::identity projection) const
                 -> decltype(this->get()(std::forward<ForwardIterable>(iterable), std::move(compare), projection))
             {
-                // utility::identity does nothing, bypass schartz_adapter entirely
+                // std::identity does nothing, bypass schartz_adapter entirely
                 return this->get()(std::forward<ForwardIterable>(iterable), std::move(compare), projection);
             }
 
             template<typename ForwardIterator, typename Compare>
             auto operator()(ForwardIterator first, ForwardIterator last,
-                            Compare compare, utility::identity projection) const
+                            Compare compare, std::identity projection) const
                 -> decltype(this->get()(std::move(first), std::move(last), std::move(compare), projection))
             {
-                // utility::identity does nothing, bypass schartz_adapter entirely
+                // std::identity does nothing, bypass schartz_adapter entirely
                 return this->get()(std::move(first), std::move(last), std::move(compare), projection);
             }
         };

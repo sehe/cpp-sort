@@ -356,7 +356,7 @@ namespace cppsort::detail
                     [&](auto&& lhs, auto&& rhs) {
                         return comp(lhs, proj(*rhs));
                     },
-                    utility::identity{}
+                    std::identity{}
                 );
                 chain.insert(insertion_point, it);
             } while (pe != current_pend);
@@ -374,7 +374,7 @@ namespace cppsort::detail
                 [&](auto&& lhs, auto&& rhs) {
                     return comp(lhs, proj(*rhs));
                 },
-                utility::identity{}
+                std::identity{}
             );
             chain.insert(insertion_point, current_it);
             current_it += 2;

@@ -10,7 +10,6 @@
 #include <vector>
 #include <catch2/catch.hpp>
 #include <cpp-sort/sorters/spread_sorter.h>
-#include <cpp-sort/utility/functional.h>
 
 TEST_CASE( "spread_sorter generate overloads",
            "[spread_sorter][sorter_facade]" )
@@ -36,17 +35,17 @@ TEST_CASE( "spread_sorter generate overloads",
         CHECK( std::is_sorted(std::begin(vec), std::end(vec), std::less<>{}) );
     }
 
-    SECTION( "default operator() with utility::identity" )
+    SECTION( "default operator() with std::identity" )
     {
         std::vector<int> vec(100'000);
         std::iota(std::begin(vec), std::end(vec), 0);
 
         std::shuffle(std::begin(vec), std::end(vec), engine);
-        cppsort::spread_sort(vec, cppsort::utility::identity{});
+        cppsort::spread_sort(vec, std::identity{});
         CHECK( std::is_sorted(std::begin(vec), std::end(vec)) );
 
         std::shuffle(std::begin(vec), std::end(vec), engine);
-        cppsort::spread_sort(std::begin(vec), std::end(vec), cppsort::utility::identity{});
+        cppsort::spread_sort(std::begin(vec), std::end(vec), std::identity{});
         CHECK( std::is_sorted(std::begin(vec), std::end(vec)) );
     }
 
@@ -56,11 +55,11 @@ TEST_CASE( "spread_sorter generate overloads",
         std::iota(std::begin(vec), std::end(vec), 0);
 
         std::shuffle(std::begin(vec), std::end(vec), engine);
-        cppsort::spread_sort(vec, std::less<>{}, cppsort::utility::identity{});
+        cppsort::spread_sort(vec, std::less<>{}, std::identity{});
         CHECK( std::is_sorted(std::begin(vec), std::end(vec)) );
 
         std::shuffle(std::begin(vec), std::end(vec), engine);
-        cppsort::spread_sort(std::begin(vec), std::end(vec), std::less<>{}, cppsort::utility::identity{});
+        cppsort::spread_sort(std::begin(vec), std::end(vec), std::less<>{}, std::identity{});
         CHECK( std::is_sorted(std::begin(vec), std::end(vec)) );
     }
 }

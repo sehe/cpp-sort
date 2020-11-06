@@ -92,7 +92,7 @@ constexpr bool is_probably_branchless_projection_v
 ```
 
 This trait tells whether the projection function `Projection` is likely to generate branchless code when called with an instance of `T`. By default it considers that the following projection functions are likely to be branchless:
-* `cppsort::utility::identity` for any type
+* [`std::identity`](https://en.cppreference.com/w/cpp/utility/functional/identity) for any type
 * Any type that satisfies [`std::is_member_function_pointer`](http://en.cppreference.com/w/cpp/types/is_member_function_pointer) provided it is called with an instance of the appropriate class
 
 These traits can be specialized for user-defined types. If one of the traits is specialized to consider that a user-defined type is likely to be branchless with a comparison/projection function, cv-qualified and reference-qualified versions of the same user-defined type will also be considered to produce branchless code when compared/projected with the same function.
@@ -126,22 +126,6 @@ This buffer provider allocates on the heap a number of elements depending on a g
 ```
 
 This header provides the class `projection_base` and the mechanism used to compose projections with `operator|`. See [[Chainable projections]] for more information.
-
-Also available in this header, the struct `identity` is a function object that can type any value of any movable type and return it as is. It is used as a default for every projection parameter in the library so that sorters view the values as they are by default, without a modification.
-
-```cpp
-struct identity:
-    projection_base
-{
-    template<typename T>
-    constexpr auto operator()(T&& t) const noexcept
-        -> T&&;
-
-    using is_transparent = /* implementation-defined */;
-};
-```
-
-It is equivalent to the proposed `std::identity` from the [Ranges TS](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4560.pdf) and will probably be replaced by the standard function object the day it makes its way into the standard.
 
 This header also provides additional function objects implementing basic unary operations. These functions objects are designed to be used as *size policies* with `dynamic_buffer` and similar classes. The following function objects are available:
 * `half`: returns the passed value divided by 2.

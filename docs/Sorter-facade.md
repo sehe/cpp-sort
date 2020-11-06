@@ -72,7 +72,7 @@ auto operator()(Iterator first, Iterator last,
     -> /* implementation-defined */;
 ```
 
-These overloads will generally forward the parameters to the corresponding `operator()` in the wrapped *sorter implementation*. It does some additional magic to forward `compare` and `projection` to the most suitable `operator()` overload in the *sorter implementation* and to complete the call with instances of [`std::less<>`](http://en.cppreference.com/w/cpp/utility/functional/less_void) and/or [`utility::identity`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#miscellaneous-function-objects) when additional parameters are needed. Basically, it ensures that everything can be done if `Sorter` has a single `operator()` taking a pair of iterators, a comparison function and a projection function.
+These overloads will generally forward the parameters to the corresponding `operator()` in the wrapped *sorter implementation*. It does some additional magic to forward `compare` and `projection` to the most suitable `operator()` overload in the *sorter implementation* and to complete the call with instances of [`std::less<>`](http://en.cppreference.com/w/cpp/utility/functional/less_void) and/or [`std::identity`](https://en.cppreference.com/w/cpp/utility/functional/identity) when additional parameters are needed. Basically, it ensures that everything can be done if `Sorter` has a single `operator()` taking a pair of iterators, a comparison function and a projection function.
 
 Provided you have a sorting function with a standard iterator interface, creating the corresponding sorter becomes trivial thanks to `sorter_facade`. For instance, here is a simple sorter wrapping a [`selection_sort`](https://en.wikipedia.org/wiki/Selection_sort):
 
@@ -82,7 +82,7 @@ struct selection_sorter_impl
     template<
         typename RandomAccessIterator,
         typename Compare = std::less<>,
-        typename Projection = cppsort::utility::identity
+        typename Projection = std::identity
     >
     auto operator()(RandomAccessIterator first, RandomAccessIterator last,
                     Compare compare={}, Projection projection={}) const
@@ -119,7 +119,7 @@ auto operator()(Iterable&& iterable, Compare compare, Projection projection) con
     -> /* implementation-defined */;
 ```
 
-These overloads will generally forward the parameters to the corresponding `operator()` overloads in the wrapped *sorter implementation* if they exist, or try to call an equivalent `operator()` taking a pair of iterators in the wrapped sorter by using `utility::begin` and `utility::end` on the iterable to sort. It also does some additional magic to forward `compare` and `projection` to the most suitable `operator()` overload in `sorter` and to complete the call with instances of [`std::less<>`](http://en.cppreference.com/w/cpp/utility/functional/less_void) and/or [`utility::identity`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#miscellaneous-function-objects) when additional parameters are needed. Basically, it ensures that everything can be done if `Sorter` has a single `operator()` taking a pair of iterators, a comparison function and a projection function.
+These overloads will generally forward the parameters to the corresponding `operator()` overloads in the wrapped *sorter implementation* if they exist, or try to call an equivalent `operator()` taking a pair of iterators in the wrapped sorter by using `utility::begin` and `utility::end` on the iterable to sort. It also does some additional magic to forward `compare` and `projection` to the most suitable `operator()` overload in `sorter` and to complete the call with instances of [`std::less<>`](http://en.cppreference.com/w/cpp/utility/functional/less_void) and/or [`std::identity`](https://en.cppreference.com/w/cpp/utility/functional/identity) when additional parameters are needed. Basically, it ensures that everything can be done if `Sorter` has a single `operator()` taking a pair of iterators, a comparison function and a projection function.
 
 It will always call the most suitable iterable `operator()` overload in the wrapped *sorter implementation* if there is one, and dispatch the call to an overload taking a pair of iterators when it cannot do otherwise.
 
@@ -129,9 +129,9 @@ Some *sorter implementations* are able to handle custom comparison functions but
 
 The reverse operation (baking a comparison function into a projection function) is not doable and simply does not make sense most of the time, so `sorter_facade` does not provide it for projection-only *sorter implementations*.
 
-### Universal support for `std::less<>` and `utility::identity`
+### Universal support for `std::less<>` and `std::identity`
 
-**cpp-sort** considers that every collection sorted without a specific comparison nor projection function shoud work *as if* it was sorted with `std::less<>` and `utility::identity`. However, some sorters do not provide overloads for `operator()` taking comparison and/or projection functions. `sorter_facade` provides the following overloads so that every sorter can be passed `std::less<>` and/or `utility::identity` even if does not handle other comparisons or projections:
+**cpp-sort** considers that every collection sorted without a specific comparison nor projection function shoud work *as if* it was sorted with `std::less<>` and `std::identity`. However, some sorters do not provide overloads for `operator()` taking comparison and/or projection functions. `sorter_facade` provides the following overloads so that every sorter can be passed `std::less<>` and/or `std::identity` even if does not handle other comparisons or projections:
 
 ```cpp
 template<typename Iterable>
@@ -139,11 +139,11 @@ auto operator()(Iterable&& iterable, std::less<>) const
     -> /* implementation-defined */;
 
 template<typename Iterable>
-auto operator()(Iterable&& iterable, utility::identity) const
+auto operator()(Iterable&& iterable, std::identity) const
     -> /* implementation-defined */;
 
 template<typename Iterable>
-auto operator()(Iterable&& iterable, std::less<>, utility::identity) const
+auto operator()(Iterable&& iterable, std::less<>, std::identity) const
     -> /* implementation-defined */;
 
 template<typename Iterable, typename Projection>
@@ -155,12 +155,12 @@ auto operator()(Iterator first, Iterator last, std::less<>) const
     -> /* implementation-defined */;
 
 template<typename Iterator>
-auto operator()(Iterator first, Iterator last, utility::identity) const
+auto operator()(Iterator first, Iterator last, std::identity) const
     -> /* implementation-defined */;
 
 template<typename Iterator>
 auto operator()(Iterator first, Iterator last,
-                std::less<>, utility::identity) const
+                std::less<>, std::identity) const
     -> /* implementation-defined */;
 
 template<typename Iterator, typename Projection>

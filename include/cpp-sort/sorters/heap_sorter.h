@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2019 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_SORTERS_HEAP_SORTER_H_
@@ -15,7 +15,6 @@
 #include <cpp-sort/fwd.h>
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
-#include <cpp-sort/utility/functional.h>
 #include "../detail/dary_heapsort.h"
 #include "../detail/heapsort.h"
 #include "../detail/iterator_traits.h"
@@ -33,7 +32,7 @@ namespace cppsort
             template<
                 typename RandomAccessIterator,
                 typename Compare = std::less<>,
-                typename Projection = utility::identity,
+                typename Projection = std::identity,
                 typename = std::enable_if_t<
                     is_projection_iterator_v<Projection, RandomAccessIterator, Compare>
                 >

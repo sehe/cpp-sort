@@ -81,6 +81,11 @@ namespace cppsort::utility
         struct is_probably_branchless_projection_impl:
             std::is_member_object_pointer<Projection>
         {};
+
+        template<typename T>
+        struct is_probably_branchless_projection_impl<std::identity, T>:
+            std::true_type
+        {};
     }
 
     // Strip types from cv and reference qualifications if needed

@@ -14,7 +14,6 @@
 #include <utility>
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
-#include <cpp-sort/utility/functional.h>
 #include <cpp-sort/utility/size.h>
 #include "../detail/iterator_traits.h"
 #include "../detail/vergesort.h"
@@ -31,7 +30,7 @@ namespace cppsort
             template<
                 typename BidirectionalIterable,
                 typename Compare = std::less<>,
-                typename Projection = utility::identity,
+                typename Projection = std::identity,
                 typename = std::enable_if_t<
                     is_projection_v<Projection, BidirectionalIterable, Compare>
                 >
@@ -56,7 +55,7 @@ namespace cppsort
             template<
                 typename BidirectionalIterator,
                 typename Compare = std::less<>,
-                typename Projection = utility::identity,
+                typename Projection = std::identity,
                 typename = std::enable_if_t<
                     is_projection_iterator_v<Projection, BidirectionalIterator, Compare>
                 >

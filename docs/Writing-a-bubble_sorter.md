@@ -241,7 +241,7 @@ struct bubble_sorter_impl
     template<
         typename ForwardIterator,
         typename StrictWeakOrdering = std::less<>,
-        typename Projection = cppsort::utility::identity,
+        typename Projection = std::identity,
         typename = std::enable_if_t<cppsort::is_projection_iterator_v<
             Projection, ForwardIterator, StrictWeakOrdering
         >>
@@ -259,7 +259,7 @@ struct bubble_sorter_impl
 };
 ```
 
-We can see several improvements compared to the previous version: first of all, we added an optional projection parameter which defauts to [`utility::identity`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#miscellaneous-function-objects). This is a function object that returns a value as is so that the default behaviour of the algorithm is to run *as if* projections didn't exist. It is very likely to be optimized aways by the compiler anyway.
+We can see several improvements compared to the previous version: first of all, we added an optional projection parameter which defauts to [`std::identity`](https://en.cppreference.com/w/cpp/utility/functional/identity). This is a function object that returns a value as is so that the default behaviour of the algorithm is to run *as if* projections didn't exist. It is very likely to be optimized aways by the compiler anyway.
 
 The second modification is one I wish we could do without (yet another thing that concepts would make more expressive): [`is_projection_iterator_v`](https://github.com/Morwenn/cpp-sort/wiki/Sorter-traits#is_projection-and-is_projection_iterator) is a trait that checks whether a projection function can be used on a dereferenced iterator. It also optionally checks that a given comparison function can be called with the result of two such projections. This trait exists to ensure that a sorter's `operator()` won't be called when these conditions are not satisfied, which may be crucial when aggregating sorters with [`hybrid_adapter`](https://github.com/Morwenn/cpp-sort/wiki/Sorter-adapters#hybrid_adapter).
 

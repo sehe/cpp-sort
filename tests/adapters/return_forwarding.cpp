@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018 Morwenn
+ * Copyright (c) 2018-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #include <functional>
@@ -18,7 +18,7 @@ namespace
         template<
             typename Iterator,
             typename Compare = std::less<>,
-            typename Projection = cppsort::utility::identity,
+            typename Projection = std::identity,
             typename = std::enable_if_t<cppsort::is_projection_iterator_v<
                 Projection, Iterator, Compare
             >>
@@ -38,7 +38,7 @@ namespace
         template<
             typename Iterator,
             typename Compare = std::less<>,
-            typename Projection = cppsort::utility::identity,
+            typename Projection = std::identity,
             typename = std::enable_if_t<cppsort::is_projection_iterator_v<
                 Projection, Iterator, Compare
             >>
@@ -113,8 +113,8 @@ TEST_CASE( "check that adapters correctly forward the result of the wrapped sort
             return_sorter
         >{};
         CHECK( sort(vec) == 42 );
-        CHECK( sort(vec.begin(), vec.end(), std::less<>{}, cppsort::utility::identity{}) == 42 );
-        CHECK( sort(vec.begin(), vec.end(), cppsort::utility::identity{}) == 42 );
+        CHECK( sort(vec.begin(), vec.end(), std::less<>{}, std::identity{}) == 42 );
+        CHECK( sort(vec.begin(), vec.end(), std::identity{}) == 42 );
     }
 
     SECTION( "self_sort_adapter" )

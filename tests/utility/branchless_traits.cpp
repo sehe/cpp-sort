@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 Morwenn
+ * Copyright (c) 2017-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #include <functional>
@@ -9,7 +9,6 @@
 #include <cpp-sort/comparators/total_less.h>
 #include <cpp-sort/comparators/weak_less.h>
 #include <cpp-sort/utility/branchless_traits.h>
-#include <cpp-sort/utility/functional.h>
 
 TEST_CASE( "test that some specific comparisons are branchless",
            "[utility][branchless][comparison]" )
@@ -68,7 +67,7 @@ TEST_CASE( "test that some specific projections are branchless",
         int bar() { return 0; }
     };
 
-    CHECK(( is_probably_branchless_projection<identity, std::string>::value ));
+    CHECK(( is_probably_branchless_projection<std::identity, std::string>::value ));
 
     CHECK(( is_probably_branchless_projection<decltype(&foobar::foo), foobar>::value ));
     CHECK_FALSE(( is_probably_branchless_projection<decltype(&foobar::bar), foobar>::value ));

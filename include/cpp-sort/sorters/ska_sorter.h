@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2018 Morwenn
+ * Copyright (c) 2017-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_SORTERS_SKA_SORTER_H_
@@ -14,7 +14,6 @@
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
 #include <cpp-sort/utility/as_function.h>
-#include <cpp-sort/utility/functional.h>
 #include "../detail/iterator_traits.h"
 #include "../detail/ska_sort.h"
 #include "../detail/type_traits.h"
@@ -30,7 +29,7 @@ namespace cppsort
         {
             template<
                 typename RandomAccessIterator,
-                typename Projection = utility::identity,
+                typename Projection = std::identity,
                 typename = std::enable_if_t<
                     is_projection_iterator_v<Projection, RandomAccessIterator>
                 >

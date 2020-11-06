@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_TESTSUITE_ALGORITHM_H_
@@ -11,14 +11,13 @@
 #include <functional>
 #include <iterator>
 #include <cpp-sort/utility/as_function.h>
-#include <cpp-sort/utility/functional.h>
 
 namespace helpers
 {
     template<
         typename Iterator,
         typename Compare = std::less<>,
-        typename Projection = cppsort::utility::identity
+        typename Projection = std::identity
     >
     auto is_sorted(Iterator first, Iterator last,
                    Compare compare={}, Projection projection={})
@@ -38,7 +37,7 @@ namespace helpers
     template<
         typename ForwardIterator,
         typename T,
-        typename Projection = cppsort::utility::identity
+        typename Projection = std::identity
     >
     auto iota(ForwardIterator first, ForwardIterator last,
               T value, Projection projection={})

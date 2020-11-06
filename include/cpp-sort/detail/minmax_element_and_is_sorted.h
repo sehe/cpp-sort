@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2017 Morwenn
+ * Copyright (c) 2016-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_DETAIL_MINMAX_ELEMENT_AND_IS_SORTED_H_
@@ -11,7 +11,6 @@
 #include <functional>
 #include <iterator>
 #include <cpp-sort/utility/as_function.h>
-#include <cpp-sort/utility/functional.h>
 #include "minmax_element.h"
 
 namespace cppsort::detail
@@ -19,7 +18,7 @@ namespace cppsort::detail
     template<
         typename ForwardIterator,
         typename Compare = std::less<>,
-        typename Projection = utility::identity
+        typename Projection = std::identity
     >
     auto minmax_element_and_is_sorted(ForwardIterator first, ForwardIterator last,
                                       Compare compare={}, Projection projection={})

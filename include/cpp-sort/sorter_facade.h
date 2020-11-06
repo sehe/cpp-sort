@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2019 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_SORTER_FACADE_H_
@@ -13,7 +13,6 @@
 #include <utility>
 #include <cpp-sort/refined.h>
 #include <cpp-sort/sorter_traits.h>
-#include <cpp-sort/utility/functional.h>
 #include "detail/config.h"
 #include "detail/projection_compare.h"
 
@@ -451,17 +450,17 @@ namespace cppsort
         }
 
         ////////////////////////////////////////////////////////////
-        // utility::identity overloads
+        // std::identity overloads
 
         template<typename Iterator>
-        auto operator()(Iterator first, Iterator last, utility::identity) const
+        auto operator()(Iterator first, Iterator last, std::identity) const
             -> std::enable_if_t<
-                not detail::has_projection_sort_iterator<Sorter, Iterator, utility::identity>::value &&
+                not detail::has_projection_sort_iterator<Sorter, Iterator, std::identity>::value &&
                 not detail::has_comparison_projection_sort_iterator<
                     Sorter,
                     Iterator,
                     std::less<>,
-                    utility::identity
+                    std::identity
                 >::value,
                 decltype(Sorter::operator()(std::move(first), std::move(last)))
             >
@@ -470,18 +469,18 @@ namespace cppsort
         }
 
         template<typename Iterable>
-        auto operator()(Iterable&& iterable, utility::identity) const
+        auto operator()(Iterable&& iterable, std::identity) const
             -> std::enable_if_t<
                 not detail::has_projection_sort_iterator<
                     Sorter,
                     decltype(std::begin(iterable)),
-                utility::identity
+                std::identity
                 >::value &&
                 not detail::has_comparison_projection_sort_iterator<
                     Sorter,
                     decltype(std::begin(iterable)),
                     std::less<>,
-                    utility::identity
+                    std::identity
                 >::value,
                 decltype(operator()(std::forward<Iterable>(iterable)))
             >
@@ -557,16 +556,16 @@ namespace cppsort
         }
 
         ////////////////////////////////////////////////////////////
-        // std::less<> and utility::identity overloads
+        // std::less<> and std::identity overloads
 
         template<typename Iterator>
-        auto operator()(Iterator first, Iterator last, std::less<>, utility::identity) const
+        auto operator()(Iterator first, Iterator last, std::less<>, std::identity) const
             -> std::enable_if_t<
                 not detail::has_comparison_projection_sort_iterator<
                     Sorter,
                     Iterator,
                     std::less<>,
-                    utility::identity
+                    std::identity
                 >::value,
                 decltype(Sorter::operator()(std::move(first), std::move(last)))
             >
@@ -575,13 +574,13 @@ namespace cppsort
         }
 
         template<typename Iterable>
-        auto operator()(Iterable&& iterable, std::less<>, utility::identity) const
+        auto operator()(Iterable&& iterable, std::less<>, std::identity) const
             -> std::enable_if_t<
                 not detail::has_comparison_projection_sort_iterator<
                     Sorter,
                     decltype(std::begin(iterable)),
                     std::less<>,
-                    utility::identity
+                    std::identity
                 >::value,
                 decltype(operator()(std::forward<Iterable>(iterable)))
             >

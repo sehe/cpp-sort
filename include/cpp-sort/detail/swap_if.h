@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_DETAIL_SWAP_IF_H_
@@ -13,7 +13,6 @@
 #include <type_traits>
 #include <utility>
 #include <cpp-sort/utility/as_function.h>
-#include <cpp-sort/utility/functional.h>
 #include <cpp-sort/utility/iter_move.h>
 #include "type_traits.h"
 
@@ -37,14 +36,14 @@ namespace cppsort::detail
 
     template<typename T>
     auto swap_if(T& lhs, T& rhs)
-        noexcept(noexcept(swap_if(lhs, rhs, std::less<>{}, utility::identity{})))
+        noexcept(noexcept(swap_if(lhs, rhs, std::less<>{}, std::identity{})))
         -> void
     {
-        swap_if(lhs, rhs, std::less{}, utility::identity{});
+        swap_if(lhs, rhs, std::less{}, std::identity{});
     }
 
     template<typename Integer>
-    auto swap_if(Integer& x, Integer& y, std::less<>, utility::identity) noexcept
+    auto swap_if(Integer& x, Integer& y, std::less<>, std::identity) noexcept
         -> std::enable_if_t<std::is_integral_v<Integer>>
     {
         Integer dx = x;
@@ -53,7 +52,7 @@ namespace cppsort::detail
     }
 
     template<typename Float>
-    auto swap_if(Float& x, Float& y, std::less<>, utility::identity) noexcept
+    auto swap_if(Float& x, Float& y, std::less<>, std::identity) noexcept
         -> std::enable_if_t<std::is_floating_point_v<Float>>
     {
         Float dx = x;
@@ -62,7 +61,7 @@ namespace cppsort::detail
     }
 
     template<typename Integer>
-    auto swap_if(Integer& x, Integer& y, std::greater<>, utility::identity) noexcept
+    auto swap_if(Integer& x, Integer& y, std::greater<>, std::identity) noexcept
         -> std::enable_if_t<std::is_integral_v<Integer>>
     {
         Integer dx = x;
@@ -71,7 +70,7 @@ namespace cppsort::detail
     }
 
     template<typename Float>
-    auto swap_if(Float& x, Float& y, std::greater<>, utility::identity) noexcept
+    auto swap_if(Float& x, Float& y, std::greater<>, std::identity) noexcept
         -> std::enable_if_t<std::is_floating_point_v<Float>>
     {
         Float dx = x;

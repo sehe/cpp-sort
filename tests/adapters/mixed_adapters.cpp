@@ -32,7 +32,7 @@ namespace
         template<
             typename ForwardIterator,
             typename Compare = std::less<>,
-            typename Projection = cppsort::utility::identity,
+            typename Projection = std::identity,
             typename = std::enable_if_t<cppsort::is_projection_iterator_v<
                 Projection, ForwardIterator, Compare
             >>

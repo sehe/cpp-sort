@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015-2018 Morwenn
+ * Copyright (c) 2015-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 #ifndef CPPSORT_SORTERS_SPREAD_SORTER_STRING_SPREAD_SORTER_H_
@@ -16,7 +16,6 @@
 #include <type_traits>
 #include <utility>
 #include <cpp-sort/sorter_facade.h>
-#include <cpp-sort/utility/functional.h>
 #include "../../detail/iterator_traits.h"
 #include "../../detail/spreadsort/string_sort.h"
 
@@ -34,7 +33,7 @@ namespace cppsort
 
             template<
                 typename RandomAccessIterator,
-                typename Projection = utility::identity
+                typename Projection = std::identity
             >
             auto operator()(RandomAccessIterator first, RandomAccessIterator last,
                             Projection projection={}) const
@@ -58,7 +57,7 @@ namespace cppsort
 
             template<
                 typename RandomAccessIterator,
-                typename Projection = utility::identity
+                typename Projection = std::identity
             >
             auto operator()(RandomAccessIterator first, RandomAccessIterator last,
                             Projection projection={}) const
@@ -86,7 +85,7 @@ namespace cppsort
 
             template<
                 typename RandomAccessIterator,
-                typename Projection = utility::identity
+                typename Projection = std::identity
             >
             auto operator()(RandomAccessIterator first, RandomAccessIterator last,
                             std::greater<> compare, Projection projection={}) const
@@ -111,7 +110,7 @@ namespace cppsort
 
             template<
                 typename RandomAccessIterator,
-                typename Projection = utility::identity
+                typename Projection = std::identity
             >
             auto operator()(RandomAccessIterator first, RandomAccessIterator last,
                             std::greater<> compare, Projection projection={}) const

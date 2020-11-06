@@ -8,7 +8,6 @@ Several of the [miscellaneous utilities][utilities] provided by the library are 
 - [`as_comparison` and `as_projection`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#as_comparison-and-as_projection) are used to make it explicit whether an ambiguous function object should be used for comparison or for projection.
 - [`as_function`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#as_function) can be used to turn any [*Callable*][callable] into an object invokable with regular parentheses.
 - [`is_probably_branchless_comparison` and `is_probably_branchless_projection`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#branchless-traits) are type traits that can be used to mark whether functions are likely to be branchless when called with a specific type.
-- [`identity`](https://github.com/Morwenn/cpp-sort/wiki/Miscellaneous-utilities#miscellaneous-function-objects) is the default projection returning the argument it is passed without modifying it.
 
 ### LWG3031
 

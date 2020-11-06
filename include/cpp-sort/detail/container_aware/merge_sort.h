@@ -17,7 +17,6 @@
 #include <cpp-sort/fwd.h>
 #include <cpp-sort/sorter_facade.h>
 #include <cpp-sort/sorter_traits.h>
-#include <cpp-sort/utility/functional.h>
 #include <cpp-sort/utility/size.h>
 #include "../projection_compare.h"
 
@@ -87,16 +86,16 @@ namespace cppsort
         auto operator()(std::list<Args...>& iterable) const
             -> void
         {
-            detail::list_merge_sort(iterable, std::less{}, utility::identity{});
+            detail::list_merge_sort(iterable, std::less{}, std::identity{});
         }
 
         template<typename Compare, typename... Args>
         auto operator()(std::list<Args...>& iterable, Compare compare) const
             -> std::enable_if_t<
-                is_projection_v<utility::identity, std::list<Args...>, Compare>
+                is_projection_v<std::identity, std::list<Args...>, Compare>
             >
         {
-            detail::list_merge_sort(iterable, std::move(compare), utility::identity{});
+            detail::list_merge_sort(iterable, std::move(compare), std::identity{});
         }
 
         template<typename Projection, typename... Args>
@@ -131,17 +130,17 @@ namespace cppsort
             -> void
         {
             detail::flist_merge_sort(iterable, utility::size(iterable),
-                                     std::less{}, utility::identity{});
+                                     std::less{}, std::identity{});
         }
 
         template<typename Compare, typename... Args>
         auto operator()(std::forward_list<Args...>& iterable, Compare compare) const
             -> std::enable_if_t<
-                is_projection_v<utility::identity, std::forward_list<Args...>, Compare>
+                is_projection_v<std::identity, std::forward_list<Args...>, Compare>
             >
         {
             detail::flist_merge_sort(iterable, utility::size(iterable),
-                                     std::move(compare), utility::identity{});
+                                     std::move(compare), std::identity{});
         }
 
         template<typename Projection, typename... Args>

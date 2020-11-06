@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-2019 Morwenn
+ * Copyright (c) 2017-2020 Morwenn
  * SPDX-License-Identifier: MIT
  */
 
@@ -24,7 +24,6 @@
 #include <type_traits>
 #include <utility>
 #include <cpp-sort/utility/as_function.h>
-#include <cpp-sort/utility/functional.h>
 #include "iterator_traits.h"
 #include "memcpy_cast.h"
 #include "pdqsort.h"
@@ -531,7 +530,7 @@ namespace cppsort::detail
         auto&& proj = utility::as_function(projection);
         pdqsort(std::move(begin), std::move(end), [&](auto&& l, auto&& r) {
             return proj(l) < proj(r);
-        }, utility::identity{});
+        }, std::identity{});
     }
 
     template<std::ptrdiff_t StdSortThreshold, typename RandomAccessIterator, typename Projection>
