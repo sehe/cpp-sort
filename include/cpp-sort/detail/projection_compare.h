@@ -38,8 +38,8 @@ namespace cppsort::detail
     {
         private:
 
-            using compare_t = decltype(utility::as_function(std::declval<Compare&>()));
-            using projection_t = decltype(utility::as_function(std::declval<Projection&>()));
+            using compare_t = decltype(utility::as_function(std::declval<Compare>()));
+            using projection_t = decltype(utility::as_function(std::declval<Projection>()));
             std::tuple<compare_t, projection_t> data;
 
         public:
