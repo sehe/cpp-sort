@@ -110,6 +110,7 @@ set(
     utility/buffer.cpp
     utility/function_constant.cpp
     utility/iter_swap.cpp
+    utility/issue_139_repro.cpp
 )
 
 # Make one executable for the whole testsuite
